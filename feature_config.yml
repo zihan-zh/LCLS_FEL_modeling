@@ -1,0 +1,723 @@
+input_variables:
+  QUAD:LI21:211:BCTRL:
+    variable_type: scalar
+    default: 6.289638681692528
+    is_constant: false
+    value_range: [4.597125658413655, 6.474004188872433]
+  QUAD:LI21:221:BCTRL:
+    variable_type: scalar
+    default: -0.08437495000000005
+    is_constant: false
+    value_range: [-0.2263953, 0.2323801]
+  QUAD:LI21:243:BCTRL:
+    variable_type: scalar
+    default: -0.0006753
+    is_constant: false
+    value_range: [-0.0006753, -0.0006753]
+  QUAD:LI21:251:BCTRL:
+    variable_type: scalar
+    default: -0.4285268
+    is_constant: false
+    value_range: [-0.478308, -0.3171504]
+  QUAD:LI21:271:BCTRL:
+    variable_type: scalar
+    default: -5.743582462158112
+    is_constant: false
+    value_range: [-6.072977354645898, -5.472751096778654]
+  QUAD:LI24:713:BCTRL:
+    variable_type: scalar
+    default: 35.41596087793928
+    is_constant: false
+    value_range: [35.41596087792043, 35.4159608779393]
+  QUAD:LI24:740:BCTRL:
+    variable_type: scalar
+    default: 0.11667599999999982
+    is_constant: false
+    value_range: [0.010892500000000003, 0.38]
+  QUAD:LI24:860:BCTRL:
+    variable_type: scalar
+    default: -0.2701799999999999
+    is_constant: false
+    value_range: [-0.6589356, 0.7530018]
+  QUAD:LI24:892:BCTRL:
+    variable_type: scalar
+    default: -40.78200266585935
+    is_constant: false
+    value_range: [-40.78200266585937, -40.782002665858485]
+  QUAD:CLTH:140:BCTRL:
+    variable_type: scalar
+    default: -21.69197639059321
+    is_constant: false
+    value_range: [-22.1306905, -20.5566005]
+  QUAD:CLTH:170:BCTRL:
+    variable_type: scalar
+    default: 11.792794092932558
+    is_constant: false
+    value_range: [11.175549533199488, 12.0313]
+  QUAD:BSYH:445:BCTRL:
+    variable_type: scalar
+    default: 39.2797262
+    is_constant: false
+    value_range: [37.223793, 40.0741477]
+  QUAD:LTUH:285:BCTRL:
+    variable_type: scalar
+    default: -69.1184608
+    is_constant: false
+    value_range: [-70.5163622, -65.5007436]
+  QUAD:LTUH:440:BCTRL:
+    variable_type: scalar
+    default: -2.7464775
+    is_constant: false
+    value_range: [-3.600000000000005, -1.5074064135714287]
+  QUAD:LTUH:460:BCTRL:
+    variable_type: scalar
+    default: -2.1479493
+    is_constant: false
+    value_range: [-4.0730703, -1.540787274144384]
+  QUAD:LTUH:665:BCTRL:
+    variable_type: scalar
+    default: 0.0
+    is_constant: false
+    value_range: [0.0, 0.0]
+  QUAD:DMPH:300:BCTRL:
+    variable_type: scalar
+    default: 31.7783305
+    is_constant: false
+    value_range: [30.4475372, 32.2897983]
+  QUAD:DMPH:380:BCTRL:
+    variable_type: scalar
+    default: -25.1216948
+    is_constant: false
+    value_range: [-25.40932, -24.3756476]
+  QUAD:DMPH:500:BCTRL:
+    variable_type: scalar
+    default: -23.7764103
+    is_constant: false
+    value_range: [-24.2572816, -22.5319334]
+  QUAD:BSYH:465:BCTRL:
+    variable_type: scalar
+    default: -36.0251853
+    is_constant: false
+    value_range: [-36.7537846, -34.1395974]
+  QUAD:BSYH:640:BCTRL:
+    variable_type: scalar
+    default: 27.209578399999998
+    is_constant: false
+    value_range: [25.7854066, 27.7598845]
+  QUAD:BSYH:735:BCTRL:
+    variable_type: scalar
+    default: -18.648173097860198
+    is_constant: false
+    value_range: [-19.0253273, -17.6721123]
+  QUAD:BSYH:910:BCTRL:
+    variable_type: scalar
+    default: 17.9324204
+    is_constant: false
+    value_range: [16.9938227, 18.2950987]
+  QUAD:LTUH:110:BCTRL:
+    variable_type: scalar
+    default: -55.4075767
+    is_constant: false
+    value_range: [-56.5281793, -52.5074984]
+  QUAD:LTUH:120:BCTRL:
+    variable_type: scalar
+    default: 38.8462498
+    is_constant: false
+    value_range: [36.8130051, 39.6319043]
+  QUAD:LTUH:180:BCTRL:
+    variable_type: scalar
+    default: 117.4285632
+    is_constant: false
+    value_range: [111.2822554, 119.8035229]
+  QUAD:LTUH:190:BCTRL:
+    variable_type: scalar
+    default: -111.9277184
+    is_constant: false
+    value_range: [-114.1914251, -106.0693294]
+  QUAD:LTUH:130:BCTRL:
+    variable_type: scalar
+    default: -69.3306972
+    is_constant: false
+    value_range: [-70.7328911, -65.7018714]
+  QUAD:LTUH:290:BCTRL:
+    variable_type: scalar
+    default: 137.8656831
+    is_constant: false
+    value_range: [130.6496796, 140.6539778]
+  QUAD:LTUH:250:BCTRL:
+    variable_type: scalar
+    default: 49.8384765
+    is_constant: false
+    value_range: [47.2298895, 50.8464457]
+  QUAD:LTUH:620:BCTRL:
+    variable_type: scalar
+    default: -47.59753046460528
+    is_constant: false
+    value_range: [-54.01779877698751, -42.016504783822775]
+  QUAD:LTUH:640:BCTRL:
+    variable_type: scalar
+    default: 50.04792277853461
+    is_constant: false
+    value_range: [45.9680322, 57.16386]
+  QUAD:LTUH:660:BCTRL:
+    variable_type: scalar
+    default: -69.31368081381223
+    is_constant: false
+    value_range: [-74.48894237382054, -65.11982601784526]
+  QUAD:LTUH:680:BCTRL:
+    variable_type: scalar
+    default: 49.39099527420636
+    is_constant: false
+    value_range: [45.8260390307751, 52.9973646]
+  QUAD:LTUH:720:BCTRL:
+    variable_type: scalar
+    default: 15.495775
+    is_constant: false
+    value_range: [14.6847134, 15.8091727]
+  QUAD:LTUH:820:BCTRL:
+    variable_type: scalar
+    default: 29.989134
+    is_constant: false
+    value_range: [28.7463387, 30.446254]
+  QUAD:LTUH:840:BCTRL:
+    variable_type: scalar
+    default: -26.5683406
+    is_constant: false
+    value_range: [-26.700252, -26.1333836]
+  QUAD:LTUH:860:BCTRL:
+    variable_type: scalar
+    default: 18.7879497
+    is_constant: false
+    value_range: [18.2345013, 20.1787676]
+  QUAD:LTUH:880:BCTRL:
+    variable_type: scalar
+    default: -19.8710262
+    is_constant: false
+    value_range: [-20.2858417, -19.7069627]
+  QUAD:UNDH:2780:BCTRL:
+    variable_type: scalar
+    default: 30.0
+    is_constant: false
+    value_range: [30.0, 30.0]
+  QUAD:UNDH:2980:BCTRL:
+    variable_type: scalar
+    default: 30.0
+    is_constant: false
+    value_range: [30.0, 30.0]
+  QUAD:UNDH:3080:BCTRL:
+    variable_type: scalar
+    default: -30.0
+    is_constant: false
+    value_range: [-30.0, -30.0]
+  QUAD:UNDH:4580:BCTRL:
+    variable_type: scalar
+    default: 30.0
+    is_constant: false
+    value_range: [30.0, 30.0]
+  QUAD:UNDH:4680:BCTRL:
+    variable_type: scalar
+    default: -40.9813935
+    is_constant: false
+    value_range: [-41.0536433, -40.7781695]
+  QUAD:LI21:201:BCTRL:
+    variable_type: scalar
+    default: -7.410653672164736
+    is_constant: false
+    value_range: [-8.46362988038502, -2.297141981771675]
+  QUAD:LI24:701:BCTRL:
+    variable_type: scalar
+    default: -20.954603678799085
+    is_constant: false
+    value_range: [-20.9546036787991, -20.954603678799064]
+  QUAD:LI21:401:BCTRL:
+    variable_type: scalar
+    default: 1.3081499967763353
+    is_constant: false
+    value_range: [1.2921309, 1.3604211841913916]
+  QUAD:LI21:501:BCTRL:
+    variable_type: scalar
+    default: -1.6261525232470413
+    is_constant: false
+    value_range: [-1.6710891, -1.5866592395148509]
+  QUAD:LI21:601:BCTRL:
+    variable_type: scalar
+    default: 1.8082049
+    is_constant: false
+    value_range: [1.7740622378455935, 1.8713144948742437]
+  QUAD:LI21:701:BCTRL:
+    variable_type: scalar
+    default: -2.2856724234686525
+    is_constant: false
+    value_range: [-2.3213872153961366, -2.253888]
+  QUAD:LI21:801:BCTRL:
+    variable_type: scalar
+    default: 2.8405182441411974
+    is_constant: false
+    value_range: [2.811013715278297, 2.8721883]
+  QUAD:LI21:901:BCTRL:
+    variable_type: scalar
+    default: -3.310031
+    is_constant: false
+    value_range: [-3.3482376782565653, -3.2179104]
+  QUAD:LI22:201:BCTRL:
+    variable_type: scalar
+    default: 3.407704471650899
+    is_constant: false
+    value_range: [3.3327560342396225, 3.4585755477282207]
+  QUAD:LI22:301:BCTRL:
+    variable_type: scalar
+    default: -4.107887670238996
+    is_constant: false
+    value_range: [-4.166537055613563, -4.022933913721936]
+  QUAD:LI22:401:BCTRL:
+    variable_type: scalar
+    default: 4.2690744
+    is_constant: false
+    value_range: [4.184910631176225, 4.332406205364564]
+  QUAD:LI22:501:BCTRL:
+    variable_type: scalar
+    default: -4.644581935573663
+    is_constant: false
+    value_range: [-4.741653236860594, -4.38301187616314]
+  QUAD:LI22:601:BCTRL:
+    variable_type: scalar
+    default: 5.0582111
+    is_constant: false
+    value_range: [4.837513608719518, 5.1702037]
+  QUAD:LI22:701:BCTRL:
+    variable_type: scalar
+    default: -5.5309841066485355
+    is_constant: false
+    value_range: [-5.726469112709086, -5.224176776306185]
+  QUAD:LI22:801:BCTRL:
+    variable_type: scalar
+    default: 6.231741473494642
+    is_constant: false
+    value_range: [5.960989862367272, 6.5175841]
+  QUAD:LI22:901:BCTRL:
+    variable_type: scalar
+    default: -6.3927433
+    is_constant: false
+    value_range: [-6.671864426866396, -6.121387752069829]
+  QUAD:LI23:201:BCTRL:
+    variable_type: scalar
+    default: 6.943112414702768
+    is_constant: false
+    value_range: [6.678124031992842, 7.227155]
+  QUAD:LI23:301:BCTRL:
+    variable_type: scalar
+    default: -7.5837412493527845
+    is_constant: false
+    value_range: [-7.812673939437921, -7.322727097996481]
+  QUAD:LI23:401:BCTRL:
+    variable_type: scalar
+    default: 7.5817151
+    is_constant: false
+    value_range: [7.3918196, 7.8045504]
+  QUAD:LI23:501:BCTRL:
+    variable_type: scalar
+    default: -7.963067
+    is_constant: false
+    value_range: [-8.206072591883235, -7.704240257164542]
+  QUAD:LI23:601:BCTRL:
+    variable_type: scalar
+    default: 8.3942338
+    is_constant: false
+    value_range: [8.0566123, 8.624033479433429]
+  QUAD:LI23:701:BCTRL:
+    variable_type: scalar
+    default: -8.580448175557697
+    is_constant: false
+    value_range: [-8.711193185842498, -8.383380701002231]
+  QUAD:LI23:801:BCTRL:
+    variable_type: scalar
+    default: 9.701615581729975
+    is_constant: false
+    value_range: [9.196508075610607, 9.995039678958863]
+  QUAD:LI23:901:BCTRL:
+    variable_type: scalar
+    default: -9.3805558
+    is_constant: false
+    value_range: [-9.8456165, -9.1384801]
+  QUAD:LI24:201:BCTRL:
+    variable_type: scalar
+    default: 10.537124898810365
+    is_constant: false
+    value_range: [10.2792341, 10.9915196]
+  QUAD:LI24:301:BCTRL:
+    variable_type: scalar
+    default: -11.997650260041947
+    is_constant: false
+    value_range: [-12.474932664299567, -11.8052776]
+  QUAD:LI24:401:BCTRL:
+    variable_type: scalar
+    default: 14.493346872472095
+    is_constant: false
+    value_range: [14.3802664, 15.039945425493132]
+  QUAD:LI24:501:BCTRL:
+    variable_type: scalar
+    default: -14.092919338070791
+    is_constant: false
+    value_range: [-14.613373198687011, -14.0178325]
+  QUAD:LI24:601:BCTRL:
+    variable_type: scalar
+    default: 9.39853109787048
+    is_constant: false
+    value_range: [9.3506078, 9.412155]
+  QUAD:LI24:901:BCTRL:
+    variable_type: scalar
+    default: 17.336866159658843
+    is_constant: false
+    value_range: [17.336866159655717, 17.336866159658857]
+  QUAD:LI25:201:BCTRL:
+    variable_type: scalar
+    default: 11.5413972
+    is_constant: false
+    value_range: [11.195374550076801, 11.5776659]
+  QUAD:LI25:301:BCTRL:
+    variable_type: scalar
+    default: -8.04723009677979
+    is_constant: false
+    value_range: [-8.298386456670444, -7.903686489530655]
+  QUAD:LI25:401:BCTRL:
+    variable_type: scalar
+    default: 7.497921303604131
+    is_constant: false
+    value_range: [7.3794525917423, 7.729744057898209]
+  QUAD:LI25:501:BCTRL:
+    variable_type: scalar
+    default: -7.327454254106478
+    is_constant: false
+    value_range: [-7.543428339901055, -7.230694562393306]
+  QUAD:LI25:601:BCTRL:
+    variable_type: scalar
+    default: 7.441151041448612
+    is_constant: false
+    value_range: [7.1710178, 7.517120169659114]
+  QUAD:LI25:701:BCTRL:
+    variable_type: scalar
+    default: -7.744729391894663
+    is_constant: false
+    value_range: [-7.8331026, -7.474884311868988]
+  QUAD:LI25:801:BCTRL:
+    variable_type: scalar
+    default: 8.211495990402373
+    is_constant: false
+    value_range: [7.841873250943333, 8.445233276828226]
+  QUAD:LI25:901:BCTRL:
+    variable_type: scalar
+    default: -8.114631722015112
+    is_constant: false
+    value_range: [-8.32505641471263, -7.760255226752128]
+  QUAD:LI26:201:BCTRL:
+    variable_type: scalar
+    default: 7.380776133154598
+    is_constant: false
+    value_range: [6.126392229583353, 8.83720404356436]
+  QUAD:LI26:301:BCTRL:
+    variable_type: scalar
+    default: -7.912130111784009
+    is_constant: false
+    value_range: [-9.519460554207805, -5.9436844]
+  QUAD:LI26:401:BCTRL:
+    variable_type: scalar
+    default: 9.123002458514415
+    is_constant: false
+    value_range: [7.7074362, 10.692676102956053]
+  QUAD:LI26:501:BCTRL:
+    variable_type: scalar
+    default: -10.088826246613774
+    is_constant: false
+    value_range: [-12.237354481574647, -8.006950907016561]
+  QUAD:LI26:601:BCTRL:
+    variable_type: scalar
+    default: 11.155546728137617
+    is_constant: false
+    value_range: [9.320491926229353, 12.31514171433963]
+  QUAD:LI26:701:BCTRL:
+    variable_type: scalar
+    default: -9.278368511878508
+    is_constant: false
+    value_range: [-11.011901035334931, -7.5727]
+  QUAD:LI26:801:BCTRL:
+    variable_type: scalar
+    default: 9.391692346514855
+    is_constant: false
+    value_range: [7.993299434346605, 11.306226142501275]
+  QUAD:LI26:901:BCTRL:
+    variable_type: scalar
+    default: -8.550132699922735
+    is_constant: false
+    value_range: [-10.366514888561229, -6.402486692743275]
+  QUAD:LI27:201:BCTRL:
+    variable_type: scalar
+    default: 10.12528334472745
+    is_constant: false
+    value_range: [9.6481245, 10.51606343742026]
+  QUAD:LI27:301:BCTRL:
+    variable_type: scalar
+    default: -10.876823269687394
+    is_constant: false
+    value_range: [-11.22743283603078, -10.29070155417725]
+  QUAD:LI27:401:BCTRL:
+    variable_type: scalar
+    default: 10.797637635259965
+    is_constant: false
+    value_range: [10.1956646, 11.130674287625371]
+  QUAD:LI27:501:BCTRL:
+    variable_type: scalar
+    default: -10.933083799060038
+    is_constant: false
+    value_range: [-11.3851262, -10.346181673437355]
+  QUAD:LI27:601:BCTRL:
+    variable_type: scalar
+    default: 11.2373959
+    is_constant: false
+    value_range: [10.576514347096754, 11.699596504150028]
+  QUAD:LI27:701:BCTRL:
+    variable_type: scalar
+    default: -11.316105631090627
+    is_constant: false
+    value_range: [-11.852704550894911, -10.705668404986074]
+  QUAD:LI27:801:BCTRL:
+    variable_type: scalar
+    default: 11.880720223045008
+    is_constant: false
+    value_range: [11.1295216, 12.5208924]
+  QUAD:LI27:901:BCTRL:
+    variable_type: scalar
+    default: -11.3928251
+    is_constant: false
+    value_range: [-12.022672717283179, -10.7580695]
+  QUAD:LI28:201:BCTRL:
+    variable_type: scalar
+    default: 11.533002661499218
+    is_constant: false
+    value_range: [10.89328785001048, 12.272536478163127]
+  QUAD:LI28:301:BCTRL:
+    variable_type: scalar
+    default: -12.1879692
+    is_constant: false
+    value_range: [-13.056425170085275, -11.521220179958373]
+  QUAD:LI28:401:BCTRL:
+    variable_type: scalar
+    default: 12.1421792
+    is_constant: false
+    value_range: [11.510729172248642, 12.9072015]
+  QUAD:LI28:501:BCTRL:
+    variable_type: scalar
+    default: -12.1871944
+    is_constant: false
+    value_range: [-13.110747479106552, -11.716448126465165]
+  QUAD:LI28:601:BCTRL:
+    variable_type: scalar
+    default: 12.425296117268504
+    is_constant: false
+    value_range: [11.785417156610915, 13.1833204]
+  QUAD:LI28:701:BCTRL:
+    variable_type: scalar
+    default: -12.67255327003711
+    is_constant: false
+    value_range: [-13.441049544089713, -11.892904773841188]
+  QUAD:LI28:801:BCTRL:
+    variable_type: scalar
+    default: 13.1516169
+    is_constant: false
+    value_range: [12.387757331753374, 14.091862449049763]
+  QUAD:LI28:901:BCTRL:
+    variable_type: scalar
+    default: -12.74722937282604
+    is_constant: false
+    value_range: [-13.734028366617856, -12.07794410719235]
+  QUAD:LI29:201:BCTRL:
+    variable_type: scalar
+    default: 12.9660052
+    is_constant: false
+    value_range: [12.238793117603615, 13.90294844960813]
+  QUAD:LI29:301:BCTRL:
+    variable_type: scalar
+    default: -13.4996619
+    is_constant: false
+    value_range: [-14.471065973151365, -12.793094578591633]
+  QUAD:LI29:401:BCTRL:
+    variable_type: scalar
+    default: 13.233428478837919
+    is_constant: false
+    value_range: [12.547563178725618, 14.177111825162562]
+  QUAD:LI29:501:BCTRL:
+    variable_type: scalar
+    default: -13.352585547603123
+    is_constant: false
+    value_range: [-14.253932568320897, -12.586899]
+  QUAD:LI29:601:BCTRL:
+    variable_type: scalar
+    default: 13.4998131
+    is_constant: false
+    value_range: [12.693125270582861, 14.357560834519104]
+  QUAD:LI29:701:BCTRL:
+    variable_type: scalar
+    default: -13.6754174
+    is_constant: false
+    value_range: [-14.505507906183972, -12.846638656326476]
+  QUAD:LI29:801:BCTRL:
+    variable_type: scalar
+    default: 14.0590303
+    is_constant: false
+    value_range: [13.207003304563877, 14.912406]
+  QUAD:LI29:901:BCTRL:
+    variable_type: scalar
+    default: -13.6128834
+    is_constant: false
+    value_range: [-14.4064612, -12.774137479287603]
+  QUAD:LI30:201:BCTRL:
+    variable_type: scalar
+    default: 13.6705522
+    is_constant: false
+    value_range: [13.021053945479363, 14.6293625]
+  QUAD:LI30:301:BCTRL:
+    variable_type: scalar
+    default: -14.415567666936674
+    is_constant: false
+    value_range: [-15.216740002511997, -13.735706806669722]
+  QUAD:LI30:401:BCTRL:
+    variable_type: scalar
+    default: 14.237998841231772
+    is_constant: false
+    value_range: [13.555635914160488, 14.830934508626806]
+  QUAD:LI30:501:BCTRL:
+    variable_type: scalar
+    default: -14.446817675671662
+    is_constant: false
+    value_range: [-14.906665139396353, -13.7706836]
+  QUAD:LI30:601:BCTRL:
+    variable_type: scalar
+    default: 14.561650433452314
+    is_constant: false
+    value_range: [13.775892129668975, 14.98145194646167]
+  QUAD:LI30:701:BCTRL:
+    variable_type: scalar
+    default: -14.842542436870692
+    is_constant: false
+    value_range: [-15.0994462, -13.82737687199078]
+  QUAD:LI30:801:BCTRL:
+    variable_type: scalar
+    default: 18.046105730470245
+    is_constant: false
+    value_range: [17.087578466095692, 18.4021138]
+  QUAD:IN20:631:BCTRL:
+    variable_type: scalar
+    default: 7.1586
+    is_constant: false
+    value_range: [7.1586, 7.1586]
+  QUAD:IN20:651:BCTRL:
+    variable_type: scalar
+    default: -5.8211352
+    is_constant: false
+    value_range: [-5.8211352, -5.8211]
+  QUAD:IN20:731:BCTRL:
+    variable_type: scalar
+    default: 10.7282437
+    is_constant: false
+    value_range: [10.7282, 10.7282437]
+  QUAD:LI21:278:BCTRL:
+    variable_type: scalar
+    default: 8.15
+    is_constant: false
+    value_range: [6.938392389018729, 8.725359902553631]
+  QUAD:LI21:315:BCTRL:
+    variable_type: scalar
+    default: 5.5907695
+    is_constant: false
+    value_range: [5.5907695, 5.5907695]
+  SOLN:IN20:111:BCTRL:
+    variable_type: scalar
+    default: -0.03383
+    is_constant: false
+    value_range: [-0.03383, -0.03383]
+  SOLN:IN20:121:BCTRL:
+    variable_type: scalar
+    default: 0.477528
+    is_constant: false
+    value_range: [0.4765687, 0.4808126]
+  QUAD:IN20:121:BCTRL:
+    variable_type: scalar
+    default: 0.0075
+    is_constant: false
+    value_range: [0.0048458102, 0.00957]
+  QUAD:IN20:122:BCTRL:
+    variable_type: scalar
+    default: 0.0
+    is_constant: false
+    value_range: [-0.0097221, 0.00608]
+  QUAD:IN20:361:BCTRL:
+    variable_type: scalar
+    default: -3.4500855
+    is_constant: false
+    value_range: [-3.6019531, -3.4013653961011987]
+  QUAD:IN20:371:BCTRL:
+    variable_type: scalar
+    default: 2.765782607226087
+    is_constant: false
+    value_range: [2.694766, 2.8502733]
+  QUAD:IN20:425:BCTRL:
+    variable_type: scalar
+    default: -1.760599335525025
+    is_constant: false
+    value_range: [-2.16858, -1.4345349250004555]
+  QUAD:IN20:441:BCTRL:
+    variable_type: scalar
+    default: -0.1164304
+    is_constant: false
+    value_range: [-0.323273, -0.00124640496707352]
+  QUAD:IN20:511:BCTRL:
+    variable_type: scalar
+    default: 3.2940972
+    is_constant: false
+    value_range: [2.839021779049168, 3.5587585308591025]
+  QUAD:IN20:525:BCTRL:
+    variable_type: scalar
+    default: -2.8971216287220036
+    is_constant: false
+    value_range: [-3.0869386124999996, -2.3352412859367453]
+  ACCL:LI21:1:L1S_S_AV:
+    variable_type: scalar
+    default: 107.58400346991718
+    is_constant: false
+    value_range: [106.14054582274565, 108.72873333238927]
+  ACCL:LI21:180:L1X_S_AV:
+    variable_type: scalar
+    default: 18.976583584572218
+    is_constant: false
+    value_range: [17.007458098704408, 19.010767640440736]
+  ACCL:LI22:1:ADES:
+    variable_type: scalar
+    default: 5133.795427871827
+    is_constant: false
+    value_range: [5007.602296357593, 5217.340851606399]
+  ACCL:LI25:1:ADES:
+    variable_type: scalar
+    default: 6410.160420591652
+    is_constant: false
+    value_range: [6121.398516965565, 7205.697974000617]
+  ACCL:LI21:1:L1S_S_PV:
+    variable_type: scalar
+    default: -22.945163922553203
+    is_constant: false
+    value_range: [-24.541765617874688, -21.70433842645546]
+  ACCL:LI21:180:L1X_S_PV:
+    variable_type: scalar
+    default: -159.99815204045024
+    is_constant: false
+    value_range: [-160.14579776590915, -159.84928591435303]
+  ACCL:LI22:1:PDES:
+    variable_type: scalar
+    default: -35.736409364752035
+    is_constant: false
+    value_range: [-37.10851281455513, -33.415527864140984]
+  ACCL:LI25:1:PDES:
+    variable_type: scalar
+    default: 0.0
+    is_constant: false
+    value_range: [-15.0, 0.0]
+output_variables:
+  hxr_pulse_intensity: {variable_type: scalar}
