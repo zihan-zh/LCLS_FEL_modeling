@@ -30,7 +30,8 @@ import time
 
 # File directory and pickle files
 file_dir = '/sdf/data/ad/ard/u/zihanzhu/ml/lcls_fel_tuning/dataset/'
-pickle_files = ['hxr_archiver_May_2025.pkl', 'hxr_archiver_Feb_2025.pkl','hxr_archiver_Mar_2025.pkl']#, 
+pickle_files = ['hxr_archiver_May_2025_updated.pkl']#, 'hxr_archiver_May_2025.pkl',
+                # 'hxr_archiver_Feb_2025.pkl','hxr_archiver_Mar_2025.pkl']#, 
                 # 'hxr_archiver_Feb_2024.pkl', 'hxr_archiver_Mar_2024.pkl', 'hxr_archiver_Apr_2024.pkl', 
                 #  'hxr_archiver_May_2024.pkl', 'hxr_archiver_Jun_2024.pkl', 'hxr_archiver_Sep_2024.pkl',
                 # 'hxr_archiver_Oct_2024.pkl', 'hxr_archiver_Nov_2024.pkl'] #
@@ -130,8 +131,27 @@ quads_list.extend(['SOLN:IN20:121:BCTRL', 'SOLN:IN20:311:BCTRL','QUAD:IN20:121:B
                    'QUAD:IN20:122:BCTRL', 'QUAD:IN20:361:BCTRL','QUAD:IN20:371:BCTRL', 'QUAD:IN20:425:BCTRL', 
                    'QUAD:IN20:441:BCTRL', 'QUAD:IN20:511:BCTRL', 'QUAD:IN20:525:BCTRL'])
 
+undh_corr_x = ['XCOR:UNDH:1380:BCTRL', 'XCOR:UNDH:1480:BCTRL', 'XCOR:UNDH:1580:BCTRL', 'XCOR:UNDH:1680:BCTRL',
+                 'XCOR:UNDH:1780:BCTRL', 'XCOR:UNDH:1880:BCTRL', 'XCOR:UNDH:1980:BCTRL', 'XCOR:UNDH:2080:BCTRL',
+                 'XCOR:UNDH:2180:BCTRL', 'XCOR:UNDH:2280:BCTRL', 'XCOR:UNDH:2380:BCTRL', 'XCOR:UNDH:2480:BCTRL',
+                 'XCOR:UNDH:2580:BCTRL', 'XCOR:UNDH:2680:BCTRL', 'XCOR:UNDH:2780:BCTRL', 'XCOR:UNDH:2880:BCTRL',
+                 'XCOR:UNDH:2980:BCTRL', 'XCOR:UNDH:3080:BCTRL', 'XCOR:UNDH:3180:BCTRL', 'XCOR:UNDH:3280:BCTRL',
+                 'XCOR:UNDH:3380:BCTRL', 'XCOR:UNDH:3480:BCTRL', 'XCOR:UNDH:3580:BCTRL', 'XCOR:UNDH:3680:BCTRL',
+                 'XCOR:UNDH:3780:BCTRL', 'XCOR:UNDH:3880:BCTRL', 'XCOR:UNDH:3980:BCTRL', 'XCOR:UNDH:4080:BCTRL',
+                 'XCOR:UNDH:4180:BCTRL', 'XCOR:UNDH:4280:BCTRL', 'XCOR:UNDH:4380:BCTRL', 'XCOR:UNDH:4480:BCTRL',
+                 'XCOR:UNDH:4580:BCTRL', 'XCOR:UNDH:4680:BCTRL', 'XCOR:UNDH:4780:BCTRL']
+undh_corr_y = ['YCOR:UNDH:1380:BCTRL', 'YCOR:UNDH:1480:BCTRL', 'YCOR:UNDH:1580:BCTRL', 'YCOR:UNDH:1680:BCTRL',
+                 'YCOR:UNDH:1780:BCTRL', 'YCOR:UNDH:1880:BCTRL', 'YCOR:UNDH:1980:BCTRL', 'YCOR:UNDH:2080:BCTRL',
+                 'YCOR:UNDH:2180:BCTRL', 'YCOR:UNDH:2280:BCTRL', 'YCOR:UNDH:2380:BCTRL', 'YCOR:UNDH:2480:BCTRL',
+                 'YCOR:UNDH:2580:BCTRL', 'YCOR:UNDH:2680:BCTRL', 'YCOR:UNDH:2780:BCTRL', 'YCOR:UNDH:2880:BCTRL',
+                 'YCOR:UNDH:2980:BCTRL', 'YCOR:UNDH:3080:BCTRL', 'YCOR:UNDH:3180:BCTRL', 'YCOR:UNDH:3280:BCTRL',
+                 'YCOR:UNDH:3380:BCTRL', 'YCOR:UNDH:3480:BCTRL', 'YCOR:UNDH:3580:BCTRL', 'YCOR:UNDH:3680:BCTRL',
+                 'YCOR:UNDH:3780:BCTRL', 'YCOR:UNDH:3880:BCTRL', 'YCOR:UNDH:3980:BCTRL', 'YCOR:UNDH:4080:BCTRL',
+                 'YCOR:UNDH:4180:BCTRL', 'YCOR:UNDH:4280:BCTRL', 'YCOR:UNDH:4380:BCTRL', 'YCOR:UNDH:4480:BCTRL',
+                 'YCOR:UNDH:4580:BCTRL', 'YCOR:UNDH:4680:BCTRL', 'YCOR:UNDH:4780:BCTRL']
+
 quads_list = list(filter(lambda x: x not in invalid_quad_list, quads_list))
-input_cols = quads_list + RF_ampls + RF_phases + ['XRMS on VCC', 'YRMS on VCC', 'HXR electron energy [GeV]', 'HXR photon energy [eV]']
+input_cols = quads_list + RF_ampls + RF_phases + undh_corr_x + undh_corr_y + ['XRMS on VCC', 'YRMS on VCC']#, 'HXR electron energy [GeV]', 'HXR photon energy [eV]']
 output_cols = ['hxr_pulse_intensity']
 input_size = len(input_cols)
 output_size = len(output_cols)
@@ -139,8 +159,9 @@ output_size = len(output_cols)
 
 final_df = final_df.drop(columns=invalid_quad_list)
 print(f'After dropping invalid PVs\nFeature number is: {final_df.shape[1]}')
-# ⬇️ ADD this line right here to fix input_cols too
+
 input_cols = [col for col in input_cols if col not in invalid_quad_list]
+print(input_cols)
 input_variables = []
 output_variables = []
 for col in input_cols:
