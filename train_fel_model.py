@@ -164,9 +164,9 @@ undh_gap = ['USEG:UNDH:1450:GapDes', 'USEG:UNDH:1550:GapDes', 'USEG:UNDH:1650:Ga
                  'USEG:UNDH:2350:GapDes', 'USEG:UNDH:2450:GapDes', 'USEG:UNDH:2550:GapDes', 'USEG:UNDH:2650:GapDes',
                  'USEG:UNDH:2750:GapDes', 'USEG:UNDH:3050:GapDes', 'USEG:UNDH:3150:GapDes',
                  'USEG:UNDH:3250:GapDes', 'USEG:UNDH:3350:GapDes', 'USEG:UNDH:3450:GapDes', 'USEG:UNDH:3550:GapDes',
-                 'USEG:UNDH:3650:GapDes', 'USEG:UNDH:3750:GapDes', 'USEG:UNDH:3850:GapDes', 'USEG:UNDH:3500:GapDes',
+                 'USEG:UNDH:3650:GapDes', 'USEG:UNDH:3750:GapDes', 'USEG:UNDH:3850:GapDes',
                  'USEG:UNDH:4050:GapDes', 'USEG:UNDH:4150:GapDes', 'USEG:UNDH:4250:GapDes', 'USEG:UNDH:4350:GapDes',
-                 'USEG:UNDH:4450:GapDes', 'USEG:UNDH:4550:GapDes', 'USEG:UNDH:4650:GapDes'] # 'USEG:UNDH:1950:GapDes'
+                 'USEG:UNDH:4450:GapDes', 'USEG:UNDH:4550:GapDes', 'USEG:UNDH:4650:GapDes'] # 'USEG:UNDH:3500:GapDes''USEG:UNDH:1950:GapDes'
 
 quads_list = list(filter(lambda x: x not in invalid_quad_list, quads_list))
 input_cols = quads_list + RF_ampls + RF_phases + ['XRMS on VCC', 'YRMS on VCC'] + undh_corr_x + undh_corr_y + undh_shifter + undh_gap #['HXR electron energy [GeV]', 'HXR photon energy [eV]']
