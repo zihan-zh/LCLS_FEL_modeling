@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --partition=milano         # Partition name (adjust based on your resources)
+#SBATCH --partition=ampere #milano         # Partition name (adjust based on your resources)
 #SBATCH --job-name=fel_model
-#SBATCH --account=ad:beamphysics    # Account name ad:beamphysics ad:ard-online@ampere  
+#SBATCH --account=ad:ard-online@ampere  # @ad:beamphysics    # Account name ad:beamphysics ad:ard-online@ampere  
 # SBATCH --mail-user=zihanzhu@slac.stanford.edu
 # SBATCH --mail-type=ALL            # Notifications for job start, end, and failure
 #SBATCH -t 144:00:00                # Wall clock time limit

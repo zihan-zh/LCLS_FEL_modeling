@@ -30,10 +30,10 @@ import time
 
 # File directory and pickle files
 file_dir = '/sdf/data/ad/ard/u/zihanzhu/ml/lcls_fel_tuning/dataset/'
-pickle_files = ['hxr_archiver_May_2025_updated.pkl']#, 'hxr_archiver_May_2025.pkl',
-                # 'hxr_archiver_Feb_2025.pkl','hxr_archiver_Mar_2025.pkl']#, 
-                # 'hxr_archiver_Feb_2024.pkl', 'hxr_archiver_Mar_2024.pkl', 'hxr_archiver_Apr_2024.pkl', 
-                #  'hxr_archiver_May_2024.pkl', 'hxr_archiver_Jun_2024.pkl', 'hxr_archiver_Sep_2024.pkl',
+pickle_files = ['hxr_archiver_2025-04.pkl',
+                'hxr_archiver_2025-03.pkl','hxr_archiver_2025-02.pkl', 'hxr_archiver_2024-09.pkl',
+                'hxr_archiver_2024-12.pkl', 'hxr_archiver_2024-11.pkl', 'hxr_archiver_2024-10.pkl']
+                 # 'hxr_archiver_May_2024.pkl', 'hxr_archiver_Jun_2024.pkl', 'hxr_archiver_Sep_2024.pkl',
                 # 'hxr_archiver_Oct_2024.pkl', 'hxr_archiver_Nov_2024.pkl'] #
 print('Reading pickle files')
 # Load and concatenate dataframes
@@ -150,8 +150,26 @@ undh_corr_y = ['YCOR:UNDH:1380:BCTRL', 'YCOR:UNDH:1480:BCTRL', 'YCOR:UNDH:1580:B
                  'YCOR:UNDH:4180:BCTRL', 'YCOR:UNDH:4280:BCTRL', 'YCOR:UNDH:4380:BCTRL', 'YCOR:UNDH:4480:BCTRL',
                  'YCOR:UNDH:4580:BCTRL', 'YCOR:UNDH:4680:BCTRL', 'YCOR:UNDH:4780:BCTRL']
 
+undh_shifter = ['PHAS:UNDH:1495:GapDes', 'PHAS:UNDH:1595:GapDes', 'PHAS:UNDH:1695:GapDes', 'PHAS:UNDH:1795:GapDes',
+                 'PHAS:UNDH:1895:GapDes', 'PHAS:UNDH:1995:GapDes', 'PHAS:UNDH:2095:GapDes', 'PHAS:UNDH:2295:GapDes',
+                 'PHAS:UNDH:2395:GapDes', 'PHAS:UNDH:2495:GapDes', 'PHAS:UNDH:2595:GapDes', 'PHAS:UNDH:2695:GapDes',
+                 'PHAS:UNDH:2795:GapDes', 'PHAS:UNDH:2995:GapDes', 'PHAS:UNDH:3095:GapDes', 'PHAS:UNDH:3195:GapDes',
+                 'PHAS:UNDH:3295:GapDes', 'PHAS:UNDH:3395:GapDes', 'PHAS:UNDH:3495:GapDes', 'PHAS:UNDH:3595:GapDes',
+                 'PHAS:UNDH:3695:GapDes', 'PHAS:UNDH:3795:GapDes', 'PHAS:UNDH:3895:GapDes', 'PHAS:UNDH:3995:GapDes',
+                 'PHAS:UNDH:4095:GapDes', 'PHAS:UNDH:4195:GapDes', 'PHAS:UNDH:4295:GapDes', 'PHAS:UNDH:4395:GapDes',
+                 'PHAS:UNDH:4495:GapDes', 'PHAS:UNDH:4595:GapDes', 'PHAS:UNDH:4695:GapDes']
+
+undh_gap = ['USEG:UNDH:1450:GapDes', 'USEG:UNDH:1550:GapDes', 'USEG:UNDH:1650:GapDes', 'USEG:UNDH:1750:GapDes',
+                 'USEG:UNDH:1850:GapDes', 'USEG:UNDH:2050:GapDes', 'USEG:UNDH:2250:GapDes',
+                 'USEG:UNDH:2350:GapDes', 'USEG:UNDH:2450:GapDes', 'USEG:UNDH:2550:GapDes', 'USEG:UNDH:2650:GapDes',
+                 'USEG:UNDH:2750:GapDes', 'USEG:UNDH:3050:GapDes', 'USEG:UNDH:3150:GapDes',
+                 'USEG:UNDH:3250:GapDes', 'USEG:UNDH:3350:GapDes', 'USEG:UNDH:3450:GapDes', 'USEG:UNDH:3550:GapDes',
+                 'USEG:UNDH:3650:GapDes', 'USEG:UNDH:3750:GapDes', 'USEG:UNDH:3850:GapDes', 'USEG:UNDH:3500:GapDes',
+                 'USEG:UNDH:4050:GapDes', 'USEG:UNDH:4150:GapDes', 'USEG:UNDH:4250:GapDes', 'USEG:UNDH:4350:GapDes',
+                 'USEG:UNDH:4450:GapDes', 'USEG:UNDH:4550:GapDes', 'USEG:UNDH:4650:GapDes'] # 'USEG:UNDH:1950:GapDes'
+
 quads_list = list(filter(lambda x: x not in invalid_quad_list, quads_list))
-input_cols = quads_list + RF_ampls + RF_phases + undh_corr_x + undh_corr_y + ['XRMS on VCC', 'YRMS on VCC']#, 'HXR electron energy [GeV]', 'HXR photon energy [eV]']
+input_cols = quads_list + RF_ampls + RF_phases + ['XRMS on VCC', 'YRMS on VCC'] + undh_corr_x + undh_corr_y + undh_shifter + undh_gap #['HXR electron energy [GeV]', 'HXR photon energy [eV]']
 output_cols = ['hxr_pulse_intensity']
 input_size = len(input_cols)
 output_size = len(output_cols)
