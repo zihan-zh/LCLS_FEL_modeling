@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore")
 from utils import parse_pv_yml
 from lume_model.utils import variables_from_yaml, variables_as_yaml
 from lume_model.models import TorchModel, TorchModule
-from lume_model.variables import ScalarInputVariable, ScalarOutputVariable
+from lume_model.variables import ScalarVariable
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -27,15 +27,24 @@ from botorch.models.transforms.input import AffineInputTransform, Normalize
 import time
 
 
+parser = argparse.ArgumentParser(description="Train a FEL NN model.")
+parser.add_argument("--epochs",         type=int,   default=5,  help="Number of training epochs")
+parser.add_argument("--batch_size",     type=int,   default=512,help="Batch size for training")
+parser.add_argument("--model_path",     type=str,   default=None,help="Path to the saved model.")
+parser.add_argument("--subsample_step", type=int, default=5, help="If >1, keep only every Nth sample from the (filtered) dataframe")
 
+args = parser.parse_args()
 # File directory and pickle files
 file_dir = '/sdf/data/ad/ard/u/zihanzhu/ml/lcls_fel_tuning/dataset/'
-pickle_files = ['hxr_archiver_2025-04.pkl',
-                'hxr_archiver_2025-03.pkl','hxr_archiver_2025-02.pkl', 'hxr_archiver_2024-09.pkl',
-                'hxr_archiver_2024-12.pkl', 'hxr_archiver_2024-11.pkl', 'hxr_archiver_2024-10.pkl']
-                 # 'hxr_archiver_May_2024.pkl', 'hxr_archiver_Jun_2024.pkl', 'hxr_archiver_Sep_2024.pkl',
-                # 'hxr_archiver_Oct_2024.pkl', 'hxr_archiver_Nov_2024.pkl'] #
-print('Reading pickle files')
+pickle_files = ['hxr_archiver_2025-05.pkl', 'hxr_archiver_2025-04.pkl', 'hxr_archiver_2025-03.pkl', 
+                'hxr_archiver_2025-02.pkl', 'hxr_archiver_2025-01.pkl', 'hxr_archiver_2024-12.pkl', 
+                'hxr_archiver_2024-11.pkl', 'hxr_archiver_2024-10.pkl', 'hxr_archiver_2024-09.pkl', 
+                'hxr_archiver_2024-08.pkl', 'hxr_archiver_2024-07.pkl', 'hxr_archiver_2024-06.pkl',
+                'hxr_archiver_2024-05.pkl', 'hxr_archiver_2024-04.pkl', 'hxr_archiver_2024-03.pkl', 
+                'hxr_archiver_2024-02.pkl', 'hxr_archiver_2024-01.pkl', 'hxr_archiver_2023-11.pkl', 
+                'hxr_archiver_2023-10.pkl', 'hxr_archiver_2023-09.pkl', 'hxr_archiver_2023-08.pkl', 
+                'hxr_archiver_2023-07.pkl']
+print('Reading pickle files:\n',pickle_files)
 # Load and concatenate dataframes
 dfs = [pd.read_pickle(file_dir+file) for file in pickle_files]
 all_df = pd.concat(dfs, axis=0, ignore_index=False)
@@ -50,7 +59,7 @@ def dataset_filter(dataset):
                 (dataset['ACCL:LI22:1:ADES'] > 3000) &  (dataset['ACCL:LI22:1:ADES'] < 5400) & \
                 (dataset['XRMS on VCC'] > 300) & (dataset['XRMS on VCC'] < 350) & \
                 (dataset['YRMS on VCC'] > 250) & (dataset['YRMS on VCC'] < 350) & \
-                (dataset['hxr_pulse_intensity'] > 0.02) & (dataset['hxr_pulse_intensity'] < 4.5) & \
+                (dataset['hxr_pulse_intensity'] > 0.1) & (dataset['hxr_pulse_intensity'] < 4.5) & \
                (dataset['Charge at gun [pC]'] > 240) & (dataset['Charge at gun [pC]'] < 260) & \
                 (dataset['Charge after BC1 [pC]'] < 200) & \
                 (dataset['HXR electron energy [GeV]'] > 8) & (dataset['HXR photon energy [eV]'] > 7000)
@@ -78,6 +87,110 @@ def dataset_filter(dataset):
 
 final_df = dataset_filter(all_df)
 print('Number of total samples after filtering:', final_df.shape[0])
+
+# 1) Define exclusion windows
+exclusion_windows = [
+    ("2025-06-25 17:00", "2025-06-26 4:00"), 
+    ("2025-05-28 23:00", "2025-05-29 6:00"),
+    ("2025-05-21 20:00", "2025-05-22 6:00"),
+    ("2025-05-15 13:00", "2025-05-15 22:00"),
+    ("2025-05-06 12:00", "2025-05-07 2:00"),
+    ("2025-04-17 11:00", "2025-04-17 23:00"),
+    ("2025-04-02 07:00", "2025-04-02 18:00"),
+    ("2025-03-26 15:00", "2025-03-27 2:00"),
+    ("2025-02-05 07:00", "2025-02-05 17:00"),
+    ("2024-11-21 08:30", "2024-11-21 18:00"),
+    ("2024-11-12 16:00", "2024-11-13 02:00"),
+    ("2024-11-06 07:30", "2024-11-06 15:30"),
+    ("2024-10-15 07:00", "2024-10-16 08:00"),
+    ("2024-09-04 21:00", "2024-09-05 15:30"),
+    ("2024-06-06 20:30", "2024-06-07 04:30"),
+    ("2024-05-09 15:00", "2024-05-09 22:00"),
+    ("2024-03-28 10:00", "2024-03-29 02:00"),
+    ("2024-03-20 17:00", "2024-03-21 01:30"),
+    ("2024-02-14 19:00", "2024-02-15 3:00"),
+    ("2023-11-16 08:00", "2023-11-16 17:00"),
+    ("2023-11-09 16:00", "2023-11-10 04:00"),
+    ("2023-11-01 13:00", "2023-11-01 22:00"),
+    ("2023-10-05 09:00", "2023-10-06 05:00"), 
+    ("2023-09-27 21:00", "2023-09-28 03:00"),
+    ("2023-09-21 09:00", "2023-09-21 19:00"),
+    ("2023-08-30 06:00", "2023-08-30 18:00") 
+
+]
+
+# 2) Make the index tz‐aware & convert
+# final_df.index = pd.to_datetime(final_df.index)       # ensure datetime
+# final_df.index = final_df.index.tz_localize("UTC")    # or its original zone
+# final_df.index = final_df.index.tz_convert("US/Pacific")
+
+# 3) Loop & drop
+for t0, t1 in exclusion_windows:
+    start = pd.Timestamp(t0, tz="US/Pacific")
+    end   = pd.Timestamp(t1, tz="US/Pacific")
+    mask  = (final_df.index >= start) & (final_df.index <= end)
+    cnt   = mask.sum()
+    if cnt:
+        print(f"Dropping {cnt} rows from {t0} to {t1}")
+        final_df = final_df[~mask]
+
+print(f"Remaining samples after exclusions: {len(final_df)}")
+
+
+
+# 1) Define your validation windows
+validation_windows = [
+    ("2025-05-25 00:00", "2025-06-05 00:00"),
+    ("2025-04-25 00:00", "2025-05-05 00:00"),
+    ("2025-03-25 00:00", "2025-04-05 00:00"),
+    ("2025-02-25 00:00", "2025-03-05 00:00"),
+    ("2024-11-25 00:00", "2024-12-05 00:00"),
+    ("2024-10-25 00:00", "2024-11-05 00:00"),
+    ("2024-09-25 00:00", "2024-10-05 00:00"),
+    ("2024-08-25 00:00", "2024-09-05 00:00"),
+    ("2024-06-25 00:00", "2024-07-05 00:00"),
+    ("2024-05-25 00:00", "2024-06-05 00:00"),
+    ("2024-04-25 00:00", "2024-05-05 00:00"),
+    ("2024-03-25 00:00", "2024-04-05 00:00"),
+    ("2024-02-25 00:00", "2024-03-05 00:00"),
+    ("2023-10-25 00:00", "2023-11-05 00:00"),
+    ("2023-09-25 00:00", "2023-10-05 00:00"),
+    ("2023-08-25 00:00", "2023-09-05 00:00"),
+    ("2023-07-25 00:00", "2023-08-05 00:00"),
+    # …
+]
+print('validation_windows:\n', validation_windows)
+# 2) Make index tz-aware (if not already)
+final_df.index = pd.to_datetime(final_df.index)
+if final_df.index.tz is None:
+    final_df.index = final_df.index.tz_localize("UTC")
+final_df.index = final_df.index.tz_convert("US/Pacific")
+
+# 3) Build a mask marking validation rows
+val_mask = pd.Series(False, index=final_df.index)
+for t0, t1 in validation_windows:
+    start = pd.Timestamp(t0, tz="US/Pacific")
+    end   = pd.Timestamp(t1, tz="US/Pacific")
+    val_mask |= (final_df.index >= start) & (final_df.index <= end)
+
+# 4) Split off the validation set
+val_df   = final_df[val_mask]
+final_df = final_df[~val_mask]
+
+print(f"  → Held-out validation samples: {len(val_df)}")
+print(f"  → Remaining for training/testing: {len(final_df)}")
+
+
+
+# apply subsampling
+if args.subsample_step > 1:
+    print(f"Sub‐sampling: keeping 1 out of every {args.subsample_step} rows "
+          f"(before invalid‐PV drop).")
+    final_df = final_df.iloc[:: args.subsample_step]
+
+print("Number of total samples after sub‐sampling:", final_df.shape[0])
+
+
 # Remove invalid quadrupoles
 invalid_quad_list = []
 for each in final_df.keys():
@@ -160,13 +273,13 @@ undh_shifter = ['PHAS:UNDH:1495:GapDes', 'PHAS:UNDH:1595:GapDes', 'PHAS:UNDH:169
                  'PHAS:UNDH:4495:GapDes', 'PHAS:UNDH:4595:GapDes', 'PHAS:UNDH:4695:GapDes']
 
 undh_gap = ['USEG:UNDH:1450:GapDes', 'USEG:UNDH:1550:GapDes', 'USEG:UNDH:1650:GapDes', 'USEG:UNDH:1750:GapDes',
-                 'USEG:UNDH:1850:GapDes', 'USEG:UNDH:2050:GapDes', 'USEG:UNDH:2250:GapDes',
+                 'USEG:UNDH:1850:GapDes', 'USEG:UNDH:1950:GapDes', 'USEG:UNDH:2050:GapDes', 'USEG:UNDH:2250:GapDes',
                  'USEG:UNDH:2350:GapDes', 'USEG:UNDH:2450:GapDes', 'USEG:UNDH:2550:GapDes', 'USEG:UNDH:2650:GapDes',
-                 'USEG:UNDH:2750:GapDes', 'USEG:UNDH:3050:GapDes', 'USEG:UNDH:3150:GapDes',
+                 'USEG:UNDH:2750:GapDes', 'USEG:UNDH:2950:GapDes', 'USEG:UNDH:3050:GapDes', 'USEG:UNDH:3150:GapDes',
                  'USEG:UNDH:3250:GapDes', 'USEG:UNDH:3350:GapDes', 'USEG:UNDH:3450:GapDes', 'USEG:UNDH:3550:GapDes',
-                 'USEG:UNDH:3650:GapDes', 'USEG:UNDH:3750:GapDes', 'USEG:UNDH:3850:GapDes',
+                 'USEG:UNDH:3650:GapDes', 'USEG:UNDH:3750:GapDes', 'USEG:UNDH:3850:GapDes', 'USEG:UNDH:3950:GapDes',
                  'USEG:UNDH:4050:GapDes', 'USEG:UNDH:4150:GapDes', 'USEG:UNDH:4250:GapDes', 'USEG:UNDH:4350:GapDes',
-                 'USEG:UNDH:4450:GapDes', 'USEG:UNDH:4550:GapDes', 'USEG:UNDH:4650:GapDes'] # 'USEG:UNDH:3500:GapDes''USEG:UNDH:1950:GapDes'
+                 'USEG:UNDH:4450:GapDes', 'USEG:UNDH:4550:GapDes', 'USEG:UNDH:4650:GapDes', 'USEG:UNDH:4750:GapDes']
 
 quads_list = list(filter(lambda x: x not in invalid_quad_list, quads_list))
 input_cols = quads_list + RF_ampls + RF_phases + ['XRMS on VCC', 'YRMS on VCC'] + undh_corr_x + undh_corr_y + undh_shifter + undh_gap #['HXR electron energy [GeV]', 'HXR photon energy [eV]']
@@ -177,17 +290,26 @@ output_size = len(output_cols)
 
 final_df = final_df.drop(columns=invalid_quad_list)
 print(f'After dropping invalid PVs\nFeature number is: {final_df.shape[1]}')
-
 input_cols = [col for col in input_cols if col not in invalid_quad_list]
-print(input_cols)
+#------------------------Reload csv file for input PVs------------------------
+# csv_data = pd.read_csv('pv_usefulness_ranking.csv')
+# input_cols = csv_data['pv_name'].tolist()[:100]
+#------------------------Reload csv file for input PVs------------------------   
+
+print('Input PVs:\n', input_cols)
+
+input_size = len(input_cols)   # will correctly be 100
+output_size = len(output_cols)
+
+
 input_variables = []
 output_variables = []
 for col in input_cols:
     lower_bound, default_value, upper_bound = final_df[col].quantile([0, 0.5, 1])
     # variable specification
-    input_variables.append(ScalarInputVariable(name=col, default=default_value, value_range=[lower_bound, upper_bound]))
+    input_variables.append(ScalarVariable(name=col, default_value=default_value, value_range=[lower_bound, upper_bound]))
 for col in output_cols:
-    output_variables.append(ScalarOutputVariable(name=col))
+    output_variables.append(ScalarVariable(name=col))
     
 # Define Dataset class
 class MyDataset(Dataset):
@@ -237,6 +359,8 @@ def create_model(version: int = 0):
     if version == 5:
         model = nn.Sequential(
                 nn.Linear(input_size, 512),
+                nn.ELU(),
+                nn.Linear(512, 512),
                 nn.ELU(),
                 nn.Linear(512, 256),
                 nn.ELU(),
@@ -310,13 +434,8 @@ def train_model(model, train_loader, test_loader, criterion, optimizer, schedule
     return train_losses, test_losses, best_model_state
     
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Train a FEL NN model.")
-    parser.add_argument("--epochs", type=int, default=5, help="Number of training epochs")
-    parser.add_argument("--batch_size", type=int, default=512, help="Batch size for training")
-    parser.add_argument("--model_path", type=str, default=None, help="Path to the saved model.")
-    args = parser.parse_args()
 
-    device = torch.device('cpu') #torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  #  torch.device('cpu')
     print(f'Using device: {device}')
 
     # Initialize data loaders
@@ -347,7 +466,7 @@ if __name__ == "__main__":
 
 
     # Initialize the learning rate scheduler
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', factor=0.8, patience=4, verbose=True)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', factor=0.8, patience=4)
 
     # Start training
     print("Starting training...")
