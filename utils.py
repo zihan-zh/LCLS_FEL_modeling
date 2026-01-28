@@ -8,7 +8,7 @@ import pandas as pd
 import torch
 from epics import caget_many
 import yaml
-from lume_model.variables import InputVariable
+from lume_model.variables import ScalarVariable
 from xopt.generators.bayesian.bayesian_generator import BayesianGenerator
 from xopt.generators.bayesian.objectives import feasibility
 
@@ -73,7 +73,7 @@ def get_model_predictions(input_dict, generator: BayesianGenerator = None):
 
 def update_input_variables_to_transformer(
     lume_model, transformer_loc: int
-) -> list[InputVariable]:
+) -> list[ScalarVariable]:
     """Returns input variables updated to the transformer at the given location.
 
     Updated are the value ranges and default of the input variables. This allows, e.g., to add a
@@ -641,8 +641,8 @@ def parse_pv_yml(file_path):
     # Process input variables
     for var_name, details in yaml_content.get('input_variables', {}).items():
         variables['input_variables'][var_name] = {
-            'variable_type': details['variable_type'],
-            'default': details['default'],
+            'variable_class': details['variable_class'],
+            'default_value': details['default_value'],
             'is_constant': details['is_constant']
         }
         if 'value_range' in details:
