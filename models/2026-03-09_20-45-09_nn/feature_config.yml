@@ -1,0 +1,1983 @@
+input_variables:
+  QUAD:LI21:211:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.114551544189453
+    is_constant: false
+    value_range: [3.0799384117126465, 7.21619176864624]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:221:BACT:
+    variable_class: ScalarVariable
+    default_value: -0.3012526035308838
+    is_constant: false
+    value_range: [-0.7424343228340149, 0.2432546466588974]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:243:BACT:
+    variable_class: ScalarVariable
+    default_value: -0.0006752711487933993
+    is_constant: false
+    value_range: [-0.0007149674347601831, -0.0006156182498671114]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:251:BACT:
+    variable_class: ScalarVariable
+    default_value: -0.13423152267932892
+    is_constant: false
+    value_range: [-0.7296835780143738, 0.5820018649101257]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:271:BACT:
+    variable_class: ScalarVariable
+    default_value: -6.1273016929626465
+    is_constant: false
+    value_range: [-7.801762104034424, -4.620820045471191]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:335:BACT:
+    variable_class: ScalarVariable
+    default_value: -5.328253269195557
+    is_constant: false
+    value_range: [-5.428651809692383, -5.321979999542236]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI24:740:BACT:
+    variable_class: ScalarVariable
+    default_value: -0.0004913438751827925
+    is_constant: false
+    value_range: [-2.0988357067108154, 2.1004128456115723]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI24:860:BACT:
+    variable_class: ScalarVariable
+    default_value: 0.5206213593482971
+    is_constant: false
+    value_range: [-1.9428659677505493, 2.1002092361450195]
+    value_range_tolerance: 1.0e-08
+  QUAD:CLTH:140:BACT:
+    variable_class: ScalarVariable
+    default_value: -21.480621337890625
+    is_constant: false
+    value_range: [-28.23421859741211, -18.265989303588867]
+    value_range_tolerance: 1.0e-08
+  QUAD:CLTH:170:BACT:
+    variable_class: ScalarVariable
+    default_value: 11.677840232849121
+    is_constant: false
+    value_range: [8.819504737854004, 15.3482666015625]
+    value_range_tolerance: 1.0e-08
+  QUAD:BSYH:445:BACT:
+    variable_class: ScalarVariable
+    default_value: 38.89719009399414
+    is_constant: false
+    value_range: [33.196380615234375, 51.12259292602539]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:285:BACT:
+    variable_class: ScalarVariable
+    default_value: -68.41285705566406
+    is_constant: false
+    value_range: [-89.95846557617188, -58.413856506347656]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:295:BACT:
+    variable_class: ScalarVariable
+    default_value: -68.51456451416016
+    is_constant: false
+    value_range: [-90.04312133789062, -58.47880935668945]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:385:BACT:
+    variable_class: ScalarVariable
+    default_value: -68.4375
+    is_constant: false
+    value_range: [-89.99608612060547, -58.42906188964844]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:395:BACT:
+    variable_class: ScalarVariable
+    default_value: -68.40614318847656
+    is_constant: false
+    value_range: [-89.9488754272461, -58.410316467285156]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:440:BACT:
+    variable_class: ScalarVariable
+    default_value: -2.1862173080444336
+    is_constant: false
+    value_range: [-5.025987148284912, 4.8731184005737305]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:460:BACT:
+    variable_class: ScalarVariable
+    default_value: -0.583571583032608
+    is_constant: false
+    value_range: [-4.96889591217041, 4.875617504119873]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:485:BACT:
+    variable_class: ScalarVariable
+    default_value: -68.43223571777344
+    is_constant: false
+    value_range: [-89.9896469116211, -58.42967987060547]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:495:BACT:
+    variable_class: ScalarVariable
+    default_value: -68.41913604736328
+    is_constant: false
+    value_range: [-89.96286010742188, -58.423095703125]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:585:BACT:
+    variable_class: ScalarVariable
+    default_value: -68.43397521972656
+    is_constant: false
+    value_range: [-89.94772338867188, -58.39979553222656]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:595:BACT:
+    variable_class: ScalarVariable
+    default_value: -68.49983978271484
+    is_constant: false
+    value_range: [-90.03822326660156, -58.45516586303711]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:665:BACT:
+    variable_class: ScalarVariable
+    default_value: 0.00020741937623824924
+    is_constant: false
+    value_range: [-0.0013990877196192741, 0.0008073634817264974]
+    value_range_tolerance: 1.0e-08
+  QUAD:DMPH:300:BACT:
+    variable_class: ScalarVariable
+    default_value: 31.521820068359375
+    is_constant: false
+    value_range: [27.50815773010254, 38.57981491088867]
+    value_range_tolerance: 1.0e-08
+  QUAD:DMPH:380:BACT:
+    variable_class: ScalarVariable
+    default_value: -24.98988151550293
+    is_constant: false
+    value_range: [-27.65188217163086, -21.981243133544922]
+    value_range_tolerance: 1.0e-08
+  QUAD:DMPH:500:BACT:
+    variable_class: ScalarVariable
+    default_value: -23.544815063476562
+    is_constant: false
+    value_range: [-30.94529151916504, -20.094085693359375]
+    value_range_tolerance: 1.0e-08
+  QUAD:DMPH:600:BACT:
+    variable_class: ScalarVariable
+    default_value: -23.550813674926758
+    is_constant: false
+    value_range: [-30.946212768554688, -20.10082244873047]
+    value_range_tolerance: 1.0e-08
+  QUAD:BSYH:465:BACT:
+    variable_class: ScalarVariable
+    default_value: -35.67437744140625
+    is_constant: false
+    value_range: [-46.8875617980957, -30.016294479370117]
+    value_range_tolerance: 1.0e-08
+  QUAD:BSYH:640:BACT:
+    variable_class: ScalarVariable
+    default_value: 25.930585861206055
+    is_constant: false
+    value_range: [15.407258033752441, 35.41322708129883]
+    value_range_tolerance: 1.0e-08
+  QUAD:BSYH:735:BACT:
+    variable_class: ScalarVariable
+    default_value: -18.36009407043457
+    is_constant: false
+    value_range: [-24.27052116394043, -15.335981369018555]
+    value_range_tolerance: 1.0e-08
+  QUAD:BSYH:910:BACT:
+    variable_class: ScalarVariable
+    default_value: 17.089563369750977
+    is_constant: false
+    value_range: [13.495473861694336, 23.339143753051758]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:110:BACT:
+    variable_class: ScalarVariable
+    default_value: -54.84263610839844
+    is_constant: false
+    value_range: [-72.11383056640625, -46.826751708984375]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:120:BACT:
+    variable_class: ScalarVariable
+    default_value: 38.45022964477539
+    is_constant: false
+    value_range: [32.83009719848633, 50.559391021728516]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:180:BACT:
+    variable_class: ScalarVariable
+    default_value: 116.23099517822266
+    is_constant: false
+    value_range: [99.24304962158203, 152.8341827392578]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:190:BACT:
+    variable_class: ScalarVariable
+    default_value: -110.7861099243164
+    is_constant: false
+    value_range: [-145.67507934570312, -94.59363555908203]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:130:BACT:
+    variable_class: ScalarVariable
+    default_value: -68.62334442138672
+    is_constant: false
+    value_range: [-90.23444366455078, -58.593414306640625]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:150:BACT:
+    variable_class: ScalarVariable
+    default_value: 68.64411163330078
+    is_constant: false
+    value_range: [58.60621643066406, 90.27184295654297]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:170:BACT:
+    variable_class: ScalarVariable
+    default_value: -68.68439483642578
+    is_constant: false
+    value_range: [-90.31282043457031, -58.646358489990234]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:350:BACT:
+    variable_class: ScalarVariable
+    default_value: 49.54582595825195
+    is_constant: false
+    value_range: [42.31254959106445, 65.13609313964844]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:450:BACT:
+    variable_class: ScalarVariable
+    default_value: 49.3600959777832
+    is_constant: false
+    value_range: [42.13750076293945, 64.9265365600586]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:550:BACT:
+    variable_class: ScalarVariable
+    default_value: 49.007102966308594
+    is_constant: false
+    value_range: [41.84325408935547, 64.42943572998047]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:290:BACT:
+    variable_class: ScalarVariable
+    default_value: 136.52218627929688
+    is_constant: false
+    value_range: [116.51263427734375, 179.43247985839844]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:390:BACT:
+    variable_class: ScalarVariable
+    default_value: 136.67904663085938
+    is_constant: false
+    value_range: [116.64025115966797, 179.6586456298828]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:490:BACT:
+    variable_class: ScalarVariable
+    default_value: 136.2997589111328
+    is_constant: false
+    value_range: [116.38163757324219, 179.21102905273438]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:590:BACT:
+    variable_class: ScalarVariable
+    default_value: 136.45484924316406
+    is_constant: false
+    value_range: [116.51436614990234, 179.4082794189453]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:250:BACT:
+    variable_class: ScalarVariable
+    default_value: 49.329158782958984
+    is_constant: false
+    value_range: [42.11878967285156, 64.86461639404297]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:620:BACT:
+    variable_class: ScalarVariable
+    default_value: -45.51728820800781
+    is_constant: false
+    value_range: [-69.40733337402344, -29.418445587158203]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:640:BACT:
+    variable_class: ScalarVariable
+    default_value: 48.60675811767578
+    is_constant: false
+    value_range: [36.76657485961914, 70.4669189453125]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:660:BACT:
+    variable_class: ScalarVariable
+    default_value: -68.87831115722656
+    is_constant: false
+    value_range: [-101.51167297363281, -52.97208023071289]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:680:BACT:
+    variable_class: ScalarVariable
+    default_value: 47.692508697509766
+    is_constant: false
+    value_range: [34.014915466308594, 72.23750305175781]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:720:BACT:
+    variable_class: ScalarVariable
+    default_value: 15.344751358032227
+    is_constant: false
+    value_range: [13.095793724060059, 20.16826820373535]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:730:BACT:
+    variable_class: ScalarVariable
+    default_value: -15.323678016662598
+    is_constant: false
+    value_range: [-20.146665573120117, -13.076967239379883]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:740:BACT:
+    variable_class: ScalarVariable
+    default_value: 15.346942901611328
+    is_constant: false
+    value_range: [13.103948593139648, 20.1800594329834]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:750:BACT:
+    variable_class: ScalarVariable
+    default_value: -15.360538482666016
+    is_constant: false
+    value_range: [-20.181346893310547, -13.111413955688477]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:760:BACT:
+    variable_class: ScalarVariable
+    default_value: 15.33134937286377
+    is_constant: false
+    value_range: [13.083221435546875, 20.156051635742188]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:770:BACT:
+    variable_class: ScalarVariable
+    default_value: -15.310952186584473
+    is_constant: false
+    value_range: [-20.13255500793457, -13.07303237915039]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:820:BACT:
+    variable_class: ScalarVariable
+    default_value: 29.75360679626465
+    is_constant: false
+    value_range: [21.836652755737305, 35.4067497253418]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:840:BACT:
+    variable_class: ScalarVariable
+    default_value: -26.49378204345703
+    is_constant: false
+    value_range: [-31.304563522338867, -24.875240325927734]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:860:BACT:
+    variable_class: ScalarVariable
+    default_value: 19.064071655273438
+    is_constant: false
+    value_range: [2.8407094478607178, 22.616403579711914]
+    value_range_tolerance: 1.0e-08
+  QUAD:LTUH:880:BACT:
+    variable_class: ScalarVariable
+    default_value: -19.948993682861328
+    is_constant: false
+    value_range: [-22.14824104309082, -18.336715698242188]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:1380:BACT:
+    variable_class: ScalarVariable
+    default_value: 30.000043869018555
+    is_constant: false
+    value_range: [18.997570037841797, 41.00010299682617]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:1480:BACT:
+    variable_class: ScalarVariable
+    default_value: -29.999814987182617
+    is_constant: false
+    value_range: [-40.999778747558594, -18.984487533569336]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:1580:BACT:
+    variable_class: ScalarVariable
+    default_value: 30.00049591064453
+    is_constant: false
+    value_range: [18.380884170532227, 41.00019836425781]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:1680:BACT:
+    variable_class: ScalarVariable
+    default_value: -30.000259399414062
+    is_constant: false
+    value_range: [-41.00115966796875, -18.985849380493164]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:1780:BACT:
+    variable_class: ScalarVariable
+    default_value: 30.000019073486328
+    is_constant: false
+    value_range: [19.000530242919922, 41.00080871582031]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:1880:BACT:
+    variable_class: ScalarVariable
+    default_value: -29.999746322631836
+    is_constant: false
+    value_range: [-41.00082015991211, -18.98763656616211]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:1980:BACT:
+    variable_class: ScalarVariable
+    default_value: 29.999725341796875
+    is_constant: false
+    value_range: [19.000167846679688, 41.000328063964844]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:2080:BACT:
+    variable_class: ScalarVariable
+    default_value: -30.000120162963867
+    is_constant: false
+    value_range: [-41.00089645385742, -18.987340927124023]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:2180:BACT:
+    variable_class: ScalarVariable
+    default_value: 30.000171661376953
+    is_constant: false
+    value_range: [18.999303817749023, 41.00054168701172]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:2280:BACT:
+    variable_class: ScalarVariable
+    default_value: -29.99950408935547
+    is_constant: false
+    value_range: [-41.000858306884766, -18.982807159423828]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:2380:BACT:
+    variable_class: ScalarVariable
+    default_value: 30.000030517578125
+    is_constant: false
+    value_range: [29.99715232849121, 30.00278663635254]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:2480:BACT:
+    variable_class: ScalarVariable
+    default_value: -29.99955940246582
+    is_constant: false
+    value_range: [-30.002347946166992, -29.997591018676758]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:2580:BACT:
+    variable_class: ScalarVariable
+    default_value: 29.999916076660156
+    is_constant: false
+    value_range: [29.9977970123291, 30.002700805664062]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:2680:BACT:
+    variable_class: ScalarVariable
+    default_value: -29.99993324279785
+    is_constant: false
+    value_range: [-30.001995086669922, -29.997228622436523]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:2780:BACT:
+    variable_class: ScalarVariable
+    default_value: 30.000099182128906
+    is_constant: false
+    value_range: [29.99728012084961, 30.001819610595703]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:2880:BACT:
+    variable_class: ScalarVariable
+    default_value: -29.999855041503906
+    is_constant: false
+    value_range: [-30.013427734375, -29.97530746459961]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:2980:BACT:
+    variable_class: ScalarVariable
+    default_value: 29.99999237060547
+    is_constant: false
+    value_range: [29.997713088989258, 30.00721549987793]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:3080:BACT:
+    variable_class: ScalarVariable
+    default_value: -30.00002670288086
+    is_constant: false
+    value_range: [-30.002685546875, -29.984111785888672]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:3180:BACT:
+    variable_class: ScalarVariable
+    default_value: 29.999996185302734
+    is_constant: false
+    value_range: [29.990524291992188, 30.004192352294922]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:3280:BACT:
+    variable_class: ScalarVariable
+    default_value: -29.999723434448242
+    is_constant: false
+    value_range: [-30.002431869506836, -29.967864990234375]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:3380:BACT:
+    variable_class: ScalarVariable
+    default_value: 30.00005531311035
+    is_constant: false
+    value_range: [29.997255325317383, 30.003522872924805]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:3480:BACT:
+    variable_class: ScalarVariable
+    default_value: -29.999801635742188
+    is_constant: false
+    value_range: [-30.002464294433594, -29.99679946899414]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:3580:BACT:
+    variable_class: ScalarVariable
+    default_value: 30.00037956237793
+    is_constant: false
+    value_range: [29.99576759338379, 30.026639938354492]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:3680:BACT:
+    variable_class: ScalarVariable
+    default_value: -29.999698638916016
+    is_constant: false
+    value_range: [-30.004091262817383, -29.996131896972656]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:3780:BACT:
+    variable_class: ScalarVariable
+    default_value: 30.0001277923584
+    is_constant: false
+    value_range: [29.996883392333984, 30.003625869750977]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:3880:BACT:
+    variable_class: ScalarVariable
+    default_value: -30.000009536743164
+    is_constant: false
+    value_range: [-30.003005981445312, -29.996299743652344]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:3980:BACT:
+    variable_class: ScalarVariable
+    default_value: 30.000051498413086
+    is_constant: false
+    value_range: [29.98822784423828, 30.007335662841797]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:4080:BACT:
+    variable_class: ScalarVariable
+    default_value: -30.000198364257812
+    is_constant: false
+    value_range: [-30.006641387939453, -29.99155616760254]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:4180:BACT:
+    variable_class: ScalarVariable
+    default_value: 29.999755859375
+    is_constant: false
+    value_range: [29.98951530456543, 30.005229949951172]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:4280:BACT:
+    variable_class: ScalarVariable
+    default_value: -29.999902725219727
+    is_constant: false
+    value_range: [-30.00535774230957, -29.9782657623291]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:4380:BACT:
+    variable_class: ScalarVariable
+    default_value: 30.00047492980957
+    is_constant: false
+    value_range: [29.99149513244629, 30.00649070739746]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:4480:BACT:
+    variable_class: ScalarVariable
+    default_value: -29.999744415283203
+    is_constant: false
+    value_range: [-30.005203247070312, -29.97597885131836]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:4580:BACT:
+    variable_class: ScalarVariable
+    default_value: 30.000333786010742
+    is_constant: false
+    value_range: [29.994009017944336, 30.014238357543945]
+    value_range_tolerance: 1.0e-08
+  QUAD:UNDH:4680:BACT:
+    variable_class: ScalarVariable
+    default_value: -40.94746017456055
+    is_constant: false
+    value_range: [-41.59927749633789, -39.852195739746094]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:201:BACT:
+    variable_class: ScalarVariable
+    default_value: -7.237563610076904
+    is_constant: false
+    value_range: [-9.052753448486328, -2.9184024333953857]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:301:BACT:
+    variable_class: ScalarVariable
+    default_value: -0.18390130996704102
+    is_constant: false
+    value_range: [-0.1839919537305832, -0.18380939960479736]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:401:BACT:
+    variable_class: ScalarVariable
+    default_value: 1.2568292617797852
+    is_constant: false
+    value_range: [0.8073468804359436, 1.371478796005249]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:501:BACT:
+    variable_class: ScalarVariable
+    default_value: -1.5372722148895264
+    is_constant: false
+    value_range: [-1.6181596517562866, -0.9795758724212646]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:601:BACT:
+    variable_class: ScalarVariable
+    default_value: 1.7617789506912231
+    is_constant: false
+    value_range: [1.2652913331985474, 1.8709330558776855]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:701:BACT:
+    variable_class: ScalarVariable
+    default_value: -2.205758213996887
+    is_constant: false
+    value_range: [-2.343820571899414, -1.552680253982544]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:801:BACT:
+    variable_class: ScalarVariable
+    default_value: 2.739000082015991
+    is_constant: false
+    value_range: [1.873273491859436, 2.8998289108276367]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:901:BACT:
+    variable_class: ScalarVariable
+    default_value: -3.2129576206207275
+    is_constant: false
+    value_range: [-3.4157297611236572, -2.152127742767334]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI22:201:BACT:
+    variable_class: ScalarVariable
+    default_value: 3.0907647609710693
+    is_constant: false
+    value_range: [2.0494790077209473, 3.6249632835388184]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI22:301:BACT:
+    variable_class: ScalarVariable
+    default_value: -3.9808719158172607
+    is_constant: false
+    value_range: [-4.604869365692139, -2.434352159500122]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI22:401:BACT:
+    variable_class: ScalarVariable
+    default_value: 4.383687973022461
+    is_constant: false
+    value_range: [2.675431728363037, 5.026333808898926]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI22:501:BACT:
+    variable_class: ScalarVariable
+    default_value: -5.146691799163818
+    is_constant: false
+    value_range: [-5.86784029006958, -3.146383047103882]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI22:601:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.207060813903809
+    is_constant: false
+    value_range: [3.7713868618011475, 7.036666393280029]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI22:701:BACT:
+    variable_class: ScalarVariable
+    default_value: -6.5935564041137695
+    is_constant: false
+    value_range: [-7.463404655456543, -3.9155988693237305]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI22:801:BACT:
+    variable_class: ScalarVariable
+    default_value: 7.314853191375732
+    is_constant: false
+    value_range: [4.332723140716553, 8.29006576538086]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI22:901:BACT:
+    variable_class: ScalarVariable
+    default_value: -6.6494646072387695
+    is_constant: false
+    value_range: [-7.5287065505981445, -3.9421448707580566]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI23:201:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.2398552894592285
+    is_constant: false
+    value_range: [3.6991350650787354, 7.035830497741699]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI23:301:BACT:
+    variable_class: ScalarVariable
+    default_value: -6.646003246307373
+    is_constant: false
+    value_range: [-7.475493907928467, -3.937863349914551]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI23:401:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.1221771240234375
+    is_constant: false
+    value_range: [3.627194404602051, 6.874351978302002]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI23:501:BACT:
+    variable_class: ScalarVariable
+    default_value: -6.837782382965088
+    is_constant: false
+    value_range: [-7.656236171722412, -4.047740936279297]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI23:601:BACT:
+    variable_class: ScalarVariable
+    default_value: 7.2662577629089355
+    is_constant: false
+    value_range: [4.294067859649658, 8.12822151184082]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI23:701:BACT:
+    variable_class: ScalarVariable
+    default_value: -8.11607837677002
+    is_constant: false
+    value_range: [-9.06657886505127, -4.805258274078369]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI23:801:BACT:
+    variable_class: ScalarVariable
+    default_value: 9.445304870605469
+    is_constant: false
+    value_range: [5.585941314697266, 10.524820327758789]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI23:901:BACT:
+    variable_class: ScalarVariable
+    default_value: -9.822813034057617
+    is_constant: false
+    value_range: [-10.938583374023438, -5.8162946701049805]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI24:201:BACT:
+    variable_class: ScalarVariable
+    default_value: 11.108366966247559
+    is_constant: false
+    value_range: [6.811530590057373, 12.208104133605957]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI24:301:BACT:
+    variable_class: ScalarVariable
+    default_value: -12.328291893005371
+    is_constant: false
+    value_range: [-13.177484512329102, -7.702062129974365]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI24:401:BACT:
+    variable_class: ScalarVariable
+    default_value: 14.692790031433105
+    is_constant: false
+    value_range: [9.044830322265625, 15.86021614074707]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI24:501:BACT:
+    variable_class: ScalarVariable
+    default_value: -14.21133804321289
+    is_constant: false
+    value_range: [-15.294414520263672, -9.022802352905273]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI24:601:BACT:
+    variable_class: ScalarVariable
+    default_value: 9.467301368713379
+    is_constant: false
+    value_range: [6.159085750579834, 9.953742027282715]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI25:201:BACT:
+    variable_class: ScalarVariable
+    default_value: 11.585824966430664
+    is_constant: false
+    value_range: [7.857098579406738, 12.222978591918945]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI25:301:BACT:
+    variable_class: ScalarVariable
+    default_value: -8.273795127868652
+    is_constant: false
+    value_range: [-8.743414878845215, -3.758580446243286]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI25:401:BACT:
+    variable_class: ScalarVariable
+    default_value: 7.724430084228516
+    is_constant: false
+    value_range: [0.1933128833770752, 8.14876651763916]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI25:501:BACT:
+    variable_class: ScalarVariable
+    default_value: -7.370700359344482
+    is_constant: false
+    value_range: [-7.948533535003662, -4.406425952911377]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI25:601:BACT:
+    variable_class: ScalarVariable
+    default_value: 7.461876392364502
+    is_constant: false
+    value_range: [5.396615982055664, 8.193552017211914]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI25:701:BACT:
+    variable_class: ScalarVariable
+    default_value: -7.784265518188477
+    is_constant: false
+    value_range: [-8.515111923217773, -5.722440242767334]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI25:801:BACT:
+    variable_class: ScalarVariable
+    default_value: 8.199686050415039
+    is_constant: false
+    value_range: [5.894128799438477, 9.14486026763916]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI25:901:BACT:
+    variable_class: ScalarVariable
+    default_value: -8.090417861938477
+    is_constant: false
+    value_range: [-9.000810623168945, -5.903156280517578]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI26:201:BACT:
+    variable_class: ScalarVariable
+    default_value: 8.843518257141113
+    is_constant: false
+    value_range: [0.19917169213294983, 21.17315101623535]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI26:301:BACT:
+    variable_class: ScalarVariable
+    default_value: -8.248419761657715
+    is_constant: false
+    value_range: [-17.47296142578125, -0.2002323567867279]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI26:401:BACT:
+    variable_class: ScalarVariable
+    default_value: 10.23024845123291
+    is_constant: false
+    value_range: [0.2025623768568039, 19.882917404174805]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI26:501:BACT:
+    variable_class: ScalarVariable
+    default_value: -9.736717224121094
+    is_constant: false
+    value_range: [-20.168195724487305, -1.7764456272125244]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI26:601:BACT:
+    variable_class: ScalarVariable
+    default_value: 11.185969352722168
+    is_constant: false
+    value_range: [4.6108503341674805, 21.173248291015625]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI26:701:BACT:
+    variable_class: ScalarVariable
+    default_value: -11.507217407226562
+    is_constant: false
+    value_range: [-19.007923126220703, -4.410855770111084]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI26:801:BACT:
+    variable_class: ScalarVariable
+    default_value: 11.877307891845703
+    is_constant: false
+    value_range: [2.7739486694335938, 21.173175811767578]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI26:901:BACT:
+    variable_class: ScalarVariable
+    default_value: -7.431325435638428
+    is_constant: false
+    value_range: [-14.578238487243652, -0.5000214576721191]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI27:201:BACT:
+    variable_class: ScalarVariable
+    default_value: 10.277987480163574
+    is_constant: false
+    value_range: [8.172499656677246, 11.642212867736816]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI27:301:BACT:
+    variable_class: ScalarVariable
+    default_value: -10.882338523864746
+    is_constant: false
+    value_range: [-12.45318603515625, -8.845065116882324]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI27:401:BACT:
+    variable_class: ScalarVariable
+    default_value: 10.959351539611816
+    is_constant: false
+    value_range: [8.908507347106934, 12.412574768066406]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI27:501:BACT:
+    variable_class: ScalarVariable
+    default_value: -11.275094985961914
+    is_constant: false
+    value_range: [-12.749237060546875, -9.249858856201172]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI27:601:BACT:
+    variable_class: ScalarVariable
+    default_value: 11.459761619567871
+    is_constant: false
+    value_range: [9.593323707580566, 13.090707778930664]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI27:701:BACT:
+    variable_class: ScalarVariable
+    default_value: -11.671443939208984
+    is_constant: false
+    value_range: [-13.414798736572266, -9.589673042297363]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI27:801:BACT:
+    variable_class: ScalarVariable
+    default_value: 12.276289939880371
+    is_constant: false
+    value_range: [9.860147476196289, 14.012491226196289]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI27:901:BACT:
+    variable_class: ScalarVariable
+    default_value: -11.933075904846191
+    is_constant: false
+    value_range: [-13.76185131072998, -9.440723419189453]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI28:201:BACT:
+    variable_class: ScalarVariable
+    default_value: 12.05733871459961
+    is_constant: false
+    value_range: [9.472267150878906, 14.5077486038208]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI28:301:BACT:
+    variable_class: ScalarVariable
+    default_value: -12.801146507263184
+    is_constant: false
+    value_range: [-15.041333198547363, -10.167932510375977]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI28:401:BACT:
+    variable_class: ScalarVariable
+    default_value: 12.688182830810547
+    is_constant: false
+    value_range: [6.579861164093018, 14.990253448486328]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI28:501:BACT:
+    variable_class: ScalarVariable
+    default_value: -12.801919937133789
+    is_constant: false
+    value_range: [-14.993041038513184, -0.19370371103286743]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI28:601:BACT:
+    variable_class: ScalarVariable
+    default_value: 12.840094566345215
+    is_constant: false
+    value_range: [3.6285831928253174, 15.787817001342773]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI28:701:BACT:
+    variable_class: ScalarVariable
+    default_value: -12.879624366760254
+    is_constant: false
+    value_range: [-15.645620346069336, -0.1930026412010193]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI28:801:BACT:
+    variable_class: ScalarVariable
+    default_value: 13.323878288269043
+    is_constant: false
+    value_range: [4.67686128616333, 16.38457679748535]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI28:901:BACT:
+    variable_class: ScalarVariable
+    default_value: -12.950287818908691
+    is_constant: false
+    value_range: [-16.850431442260742, -8.011786460876465]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI29:201:BACT:
+    variable_class: ScalarVariable
+    default_value: 13.110311508178711
+    is_constant: false
+    value_range: [10.045941352844238, 16.185691833496094]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI29:301:BACT:
+    variable_class: ScalarVariable
+    default_value: -13.802973747253418
+    is_constant: false
+    value_range: [-17.042984008789062, -10.68181324005127]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI29:401:BACT:
+    variable_class: ScalarVariable
+    default_value: 13.458332061767578
+    is_constant: false
+    value_range: [10.530648231506348, 16.710676193237305]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI29:501:BACT:
+    variable_class: ScalarVariable
+    default_value: -13.61844253540039
+    is_constant: false
+    value_range: [-16.86431312561035, -10.66504192352295]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI29:601:BACT:
+    variable_class: ScalarVariable
+    default_value: 13.73923110961914
+    is_constant: false
+    value_range: [10.894192695617676, 17.037952423095703]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI29:701:BACT:
+    variable_class: ScalarVariable
+    default_value: -13.76491928100586
+    is_constant: false
+    value_range: [-17.28028106689453, -11.11789321899414]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI29:801:BACT:
+    variable_class: ScalarVariable
+    default_value: 14.245416641235352
+    is_constant: false
+    value_range: [11.429858207702637, 17.98770523071289]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI29:901:BACT:
+    variable_class: ScalarVariable
+    default_value: -13.7903470993042
+    is_constant: false
+    value_range: [-17.48296356201172, -11.134489059448242]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI30:201:BACT:
+    variable_class: ScalarVariable
+    default_value: 13.961796760559082
+    is_constant: false
+    value_range: [11.36166000366211, 17.535255432128906]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI30:301:BACT:
+    variable_class: ScalarVariable
+    default_value: -14.622591972351074
+    is_constant: false
+    value_range: [-18.502012252807617, -12.004100799560547]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI30:401:BACT:
+    variable_class: ScalarVariable
+    default_value: 14.250652313232422
+    is_constant: false
+    value_range: [11.86442756652832, 18.269737243652344]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI30:501:BACT:
+    variable_class: ScalarVariable
+    default_value: -14.413818359375
+    is_constant: false
+    value_range: [-18.533367156982422, -11.859606742858887]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI30:601:BACT:
+    variable_class: ScalarVariable
+    default_value: 14.606106758117676
+    is_constant: false
+    value_range: [12.088593482971191, 18.801820755004883]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI30:701:BACT:
+    variable_class: ScalarVariable
+    default_value: -14.757454872131348
+    is_constant: false
+    value_range: [-19.11581802368164, -12.352022171020508]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI30:801:BACT:
+    variable_class: ScalarVariable
+    default_value: 18.01419448852539
+    is_constant: false
+    value_range: [15.265430450439453, 23.533403396606445]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:631:BACT:
+    variable_class: ScalarVariable
+    default_value: 7.158523082733154
+    is_constant: false
+    value_range: [7.153985977172852, 7.1621880531311035]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:651:BACT:
+    variable_class: ScalarVariable
+    default_value: -5.918224811553955
+    is_constant: false
+    value_range: [-5.921548843383789, -5.817676544189453]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:731:BACT:
+    variable_class: ScalarVariable
+    default_value: 10.907532691955566
+    is_constant: false
+    value_range: [10.724581718444824, 10.911758422851562]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:771:BACT:
+    variable_class: ScalarVariable
+    default_value: -3.4696333408355713
+    is_constant: false
+    value_range: [-3.473062515258789, -3.410367012023926]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:781:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.631152629852295
+    is_constant: false
+    value_range: [6.627676010131836, 6.637083053588867]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:131:BACT:
+    variable_class: ScalarVariable
+    default_value: -2.4340150356292725
+    is_constant: false
+    value_range: [-2.4352543354034424, -2.432823896408081]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:161:BACT:
+    variable_class: ScalarVariable
+    default_value: 1.378404140472412
+    is_constant: false
+    value_range: [1.3777964115142822, 1.3799023628234863]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:278:BACT:
+    variable_class: ScalarVariable
+    default_value: 7.647676467895508
+    is_constant: false
+    value_range: [5.468244552612305, 9.999245643615723]
+    value_range_tolerance: 1.0e-08
+  QUAD:LI21:315:BACT:
+    variable_class: ScalarVariable
+    default_value: 5.590981483459473
+    is_constant: false
+    value_range: [5.388442516326904, 5.937844753265381]
+    value_range_tolerance: 1.0e-08
+  SOLN:IN20:121:BACT:
+    variable_class: ScalarVariable
+    default_value: 0.48420634865760803
+    is_constant: false
+    value_range: [0.4512227177619934, 0.4917026162147522]
+    value_range_tolerance: 1.0e-08
+  SOLN:IN20:311:BACT:
+    variable_class: ScalarVariable
+    default_value: -0.0006230889703147113
+    is_constant: false
+    value_range: [-0.0006277519860304892, -0.0006196694448590279]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:121:BACT:
+    variable_class: ScalarVariable
+    default_value: 0.0037135451566427946
+    is_constant: false
+    value_range: [-0.014985382556915283, 0.014996933750808239]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:122:BACT:
+    variable_class: ScalarVariable
+    default_value: 0.0040503982454538345
+    is_constant: false
+    value_range: [-0.013289286755025387, 0.015000112354755402]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:361:BACT:
+    variable_class: ScalarVariable
+    default_value: -3.4836299419403076
+    is_constant: false
+    value_range: [-4.01464319229126, -2.9392294883728027]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:371:BACT:
+    variable_class: ScalarVariable
+    default_value: 2.7224340438842773
+    is_constant: false
+    value_range: [2.4065754413604736, 3.0689961910247803]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:425:BACT:
+    variable_class: ScalarVariable
+    default_value: -1.6716976761817932
+    is_constant: false
+    value_range: [-3.9508557319641113, -0.5901550054550171]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:441:BACT:
+    variable_class: ScalarVariable
+    default_value: 0.02932037226855755
+    is_constant: false
+    value_range: [-0.7056958079338074, 2.345069169998169]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:511:BACT:
+    variable_class: ScalarVariable
+    default_value: 2.8304309844970703
+    is_constant: false
+    value_range: [1.3195139169692993, 4.204927444458008]
+    value_range_tolerance: 1.0e-08
+  QUAD:IN20:525:BACT:
+    variable_class: ScalarVariable
+    default_value: -2.5612199306488037
+    is_constant: false
+    value_range: [-3.715466022491455, -0.8845598101615906]
+    value_range_tolerance: 1.0e-08
+  ACCL:LI21:1:L1S_S_AV:
+    variable_class: ScalarVariable
+    default_value: 105.76177978515625
+    is_constant: false
+    value_range: [100.00000762939453, 112.08007049560547]
+    value_range_tolerance: 1.0e-08
+  ACCL:LI21:180:L1X_S_AV:
+    variable_class: ScalarVariable
+    default_value: 18.460535049438477
+    is_constant: false
+    value_range: [6.948431968688965, 25.50543975830078]
+    value_range_tolerance: 1.0e-08
+  ACCL:LI22:1:ADES:
+    variable_class: ScalarVariable
+    default_value: 5301.8154296875
+    is_constant: false
+    value_range: [3496.2900390625, 5998.6357421875]
+    value_range_tolerance: 1.0e-08
+  ACCL:LI25:1:ADES:
+    variable_class: ScalarVariable
+    default_value: 6157.32666015625
+    is_constant: false
+    value_range: [4330.6494140625, 10390.58984375]
+    value_range_tolerance: 1.0e-08
+  ACCL:LI21:1:L1S_S_PV:
+    variable_class: ScalarVariable
+    default_value: -22.604005813598633
+    is_constant: false
+    value_range: [-33.887779235839844, -15.399725914001465]
+    value_range_tolerance: 1.0e-08
+  ACCL:LI21:180:L1X_S_PV:
+    variable_class: ScalarVariable
+    default_value: -160.00161743164062
+    is_constant: false
+    value_range: [-177.95004272460938, -156.74661254882812]
+    value_range_tolerance: 1.0e-08
+  ACCL:LI22:1:PDES:
+    variable_class: ScalarVariable
+    default_value: -37.73502731323242
+    is_constant: false
+    value_range: [-45.478904724121094, -24.725605010986328]
+    value_range_tolerance: 1.0e-08
+  CAMR:IN20:186:XRMS:
+    variable_class: ScalarVariable
+    default_value: 333.0727233886719
+    is_constant: false
+    value_range: [250.59193420410156, 379.0511474609375]
+    value_range_tolerance: 1.0e-08
+  CAMR:IN20:186:YRMS:
+    variable_class: ScalarVariable
+    default_value: 325.3129577636719
+    is_constant: false
+    value_range: [251.5477752685547, 376.312255859375]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:1380:BACT:
+    variable_class: ScalarVariable
+    default_value: -2.8449201749936037e-07
+    is_constant: false
+    value_range: [-0.0009821036364883184, 0.0009890859946608543]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:1480:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.516432040371001e-05
+    is_constant: false
+    value_range: [-0.0004041089559905231, 0.0006380023551173508]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:1580:BACT:
+    variable_class: ScalarVariable
+    default_value: 0.00012509140651673079
+    is_constant: false
+    value_range: [-0.0003992630518041551, 0.000698764924891293]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:1680:BACT:
+    variable_class: ScalarVariable
+    default_value: 1.238894765265286e-05
+    is_constant: false
+    value_range: [-0.0002583581954240799, 0.00028871389804407954]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:1780:BACT:
+    variable_class: ScalarVariable
+    default_value: -0.00010246907913824543
+    is_constant: false
+    value_range: [-0.0005263329367153347, 0.00040158562478609383]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:1880:BACT:
+    variable_class: ScalarVariable
+    default_value: -0.0001254649250768125
+    is_constant: false
+    value_range: [-0.0007688354817219079, 0.0003176488680765033]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:1980:BACT:
+    variable_class: ScalarVariable
+    default_value: -0.00011024074774468318
+    is_constant: false
+    value_range: [-0.0006670973380096257, 0.0005284503567963839]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:2080:BACT:
+    variable_class: ScalarVariable
+    default_value: -6.304230282694334e-06
+    is_constant: false
+    value_range: [-0.0007085129036568105, 0.000930838636122644]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:2180:BACT:
+    variable_class: ScalarVariable
+    default_value: 2.0838380805798806e-05
+    is_constant: false
+    value_range: [-0.0007257095421664417, 0.000971536966972053]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:2280:BACT:
+    variable_class: ScalarVariable
+    default_value: 4.016101229353808e-06
+    is_constant: false
+    value_range: [-0.0006120636244304478, 0.0005981419235467911]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:2380:BACT:
+    variable_class: ScalarVariable
+    default_value: -2.103841325151734e-05
+    is_constant: false
+    value_range: [-0.00030727239209227264, 0.0002391074231127277]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:2480:BACT:
+    variable_class: ScalarVariable
+    default_value: -2.672445225471165e-05
+    is_constant: false
+    value_range: [-0.0006338375387713313, 0.00018605653895065188]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:2580:BACT:
+    variable_class: ScalarVariable
+    default_value: -2.054968172160443e-05
+    is_constant: false
+    value_range: [-0.00033168421941809356, 0.000660754565615207]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:2680:BACT:
+    variable_class: ScalarVariable
+    default_value: 2.2886448277859017e-05
+    is_constant: false
+    value_range: [-0.00016108786803670228, 0.0005595804541371763]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:2780:BACT:
+    variable_class: ScalarVariable
+    default_value: 2.5339115381939337e-05
+    is_constant: false
+    value_range: [-0.0008401598897762597, 0.0005365904653444886]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:2880:BACT:
+    variable_class: ScalarVariable
+    default_value: 3.401716639928054e-06
+    is_constant: false
+    value_range: [-0.0005571627989411354, 0.0009620104683563113]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:2980:BACT:
+    variable_class: ScalarVariable
+    default_value: -5.146604962646961e-05
+    is_constant: false
+    value_range: [-0.000788069621194154, 0.0009336209623143077]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:3080:BACT:
+    variable_class: ScalarVariable
+    default_value: -8.828299905871972e-05
+    is_constant: false
+    value_range: [-0.0008817858761176467, 0.00022379685833584517]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:3180:BACT:
+    variable_class: ScalarVariable
+    default_value: -8.968618203653023e-05
+    is_constant: false
+    value_range: [-0.000600970524828881, 0.00024407422461081296]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:3280:BACT:
+    variable_class: ScalarVariable
+    default_value: -3.209988062735647e-05
+    is_constant: false
+    value_range: [-0.0008363833767361939, 0.0003439175197854638]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:3380:BACT:
+    variable_class: ScalarVariable
+    default_value: -1.3256257034299779e-06
+    is_constant: false
+    value_range: [-0.00027618854073807597, 0.000292350014206022]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:3480:BACT:
+    variable_class: ScalarVariable
+    default_value: -3.026720833076979e-06
+    is_constant: false
+    value_range: [-0.00026849121786653996, 0.0005286589730530977]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:3580:BACT:
+    variable_class: ScalarVariable
+    default_value: 4.9707546168065164e-06
+    is_constant: false
+    value_range: [-0.0004505771794356406, 0.00027025461895391345]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:3680:BACT:
+    variable_class: ScalarVariable
+    default_value: 1.1773781807278283e-06
+    is_constant: false
+    value_range: [-0.00022451893892139196, 0.00032661628210917115]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:3780:BACT:
+    variable_class: ScalarVariable
+    default_value: 9.442084092370351e-07
+    is_constant: false
+    value_range: [-0.00045030718320049345, 0.0005812929593957961]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:3880:BACT:
+    variable_class: ScalarVariable
+    default_value: -1.1605312465690076e-05
+    is_constant: false
+    value_range: [-0.0007774220430292189, 0.0002342849038541317]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:3980:BACT:
+    variable_class: ScalarVariable
+    default_value: -4.62252319266554e-05
+    is_constant: false
+    value_range: [-0.000595622812397778, 0.0004537559289019555]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:4080:BACT:
+    variable_class: ScalarVariable
+    default_value: -7.527587877120823e-05
+    is_constant: false
+    value_range: [-0.00039604472112841904, 0.00016221898840740323]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:4180:BACT:
+    variable_class: ScalarVariable
+    default_value: -9.408836922375485e-05
+    is_constant: false
+    value_range: [-0.000695984810590744, 0.0005792076117359102]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:4280:BACT:
+    variable_class: ScalarVariable
+    default_value: -3.400279820198193e-05
+    is_constant: false
+    value_range: [-0.0006600914057344198, 0.0008707446977496147]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:4380:BACT:
+    variable_class: ScalarVariable
+    default_value: 7.943116543174256e-06
+    is_constant: false
+    value_range: [-0.0008889723103493452, 0.000994296045973897]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:4480:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.488228245871142e-05
+    is_constant: false
+    value_range: [-0.0009999474277719855, 0.0007657059468328953]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:4580:BACT:
+    variable_class: ScalarVariable
+    default_value: 8.361756772501394e-05
+    is_constant: false
+    value_range: [-0.0009115072898566723, 0.0009999098256230354]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:4680:BACT:
+    variable_class: ScalarVariable
+    default_value: 3.44129184668418e-05
+    is_constant: false
+    value_range: [-0.0009998823516070843, 0.0009985840879380703]
+    value_range_tolerance: 1.0e-08
+  XCOR:UNDH:4780:BACT:
+    variable_class: ScalarVariable
+    default_value: 2.2262665879679844e-06
+    is_constant: false
+    value_range: [-0.0026286914944648743, 0.004819490015506744]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:1380:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.926174683030695e-05
+    is_constant: false
+    value_range: [-0.0007750699296593666, 0.0015767222503200173]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:1480:BACT:
+    variable_class: ScalarVariable
+    default_value: 0.00018501920567359775
+    is_constant: false
+    value_range: [-0.00036111148074269295, 0.0020921085961163044]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:1580:BACT:
+    variable_class: ScalarVariable
+    default_value: 0.0001498956116847694
+    is_constant: false
+    value_range: [-0.0003744501154869795, 0.0013866513036191463]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:1680:BACT:
+    variable_class: ScalarVariable
+    default_value: 0.00011775942402891815
+    is_constant: false
+    value_range: [-0.0007631551125086844, 0.0008935536025092006]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:1780:BACT:
+    variable_class: ScalarVariable
+    default_value: 7.310954970307648e-05
+    is_constant: false
+    value_range: [-0.0010711656650528312, 0.00047224925947375596]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:1880:BACT:
+    variable_class: ScalarVariable
+    default_value: 7.413176354020834e-05
+    is_constant: false
+    value_range: [-0.000790875987149775, 0.0016293571097776294]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:1980:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.585600203834474e-05
+    is_constant: false
+    value_range: [-0.0006563356146216393, 0.000654485949780792]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:2080:BACT:
+    variable_class: ScalarVariable
+    default_value: 3.0079821954132058e-05
+    is_constant: false
+    value_range: [-0.0004162498516961932, 0.0015063132159411907]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:2180:BACT:
+    variable_class: ScalarVariable
+    default_value: 1.1488355085020885e-05
+    is_constant: false
+    value_range: [-0.0008642619359306991, 0.0008172884117811918]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:2280:BACT:
+    variable_class: ScalarVariable
+    default_value: -2.9425757475110004e-06
+    is_constant: false
+    value_range: [-0.0007931145955808461, 0.0005024568527005613]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:2380:BACT:
+    variable_class: ScalarVariable
+    default_value: 2.4827427296258975e-06
+    is_constant: false
+    value_range: [-0.0003444444155320525, 0.00037451452226378024]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:2480:BACT:
+    variable_class: ScalarVariable
+    default_value: 3.3583153708605096e-05
+    is_constant: false
+    value_range: [-0.00043084105709567666, 0.0004823935159947723]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:2580:BACT:
+    variable_class: ScalarVariable
+    default_value: 3.305545396870002e-05
+    is_constant: false
+    value_range: [-0.0002712436835281551, 0.00045728214900009334]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:2680:BACT:
+    variable_class: ScalarVariable
+    default_value: 3.666741031338461e-05
+    is_constant: false
+    value_range: [-0.0005420335219241679, 0.0005729558179154992]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:2780:BACT:
+    variable_class: ScalarVariable
+    default_value: -4.366565008240286e-06
+    is_constant: false
+    value_range: [-0.0006376646342687309, 0.0002714395523071289]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:2880:BACT:
+    variable_class: ScalarVariable
+    default_value: -2.962250255222898e-05
+    is_constant: false
+    value_range: [-0.00048572479863651097, 0.0005623024771921337]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:2980:BACT:
+    variable_class: ScalarVariable
+    default_value: -5.428938038676279e-06
+    is_constant: false
+    value_range: [-0.0005044311983510852, 0.000948107335716486]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:3080:BACT:
+    variable_class: ScalarVariable
+    default_value: 2.534590930736158e-05
+    is_constant: false
+    value_range: [-0.0007519266218878329, 0.0004386424843687564]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:3180:BACT:
+    variable_class: ScalarVariable
+    default_value: 4.5776287151966244e-05
+    is_constant: false
+    value_range: [-0.0004186287696938962, 0.00025720061967149377]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:3280:BACT:
+    variable_class: ScalarVariable
+    default_value: 3.280563760199584e-05
+    is_constant: false
+    value_range: [-0.0006825533928349614, 0.0004666489257942885]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:3380:BACT:
+    variable_class: ScalarVariable
+    default_value: -1.1870650268974714e-05
+    is_constant: false
+    value_range: [-0.00045600938028655946, 0.000672376190777868]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:3480:BACT:
+    variable_class: ScalarVariable
+    default_value: -5.8430850913282484e-05
+    is_constant: false
+    value_range: [-0.0003467740025371313, 0.0016379693988710642]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:3580:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.214941549842479e-06
+    is_constant: false
+    value_range: [-0.0008344901725649834, 0.0005933999782428145]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:3680:BACT:
+    variable_class: ScalarVariable
+    default_value: 5.213830081629567e-05
+    is_constant: false
+    value_range: [-0.0004955570329912007, 0.0006349125178530812]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:3780:BACT:
+    variable_class: ScalarVariable
+    default_value: 4.989283115719445e-05
+    is_constant: false
+    value_range: [-0.0008096240344457328, 0.00027123160543851554]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:3880:BACT:
+    variable_class: ScalarVariable
+    default_value: 3.6670389818027616e-05
+    is_constant: false
+    value_range: [-0.001201955950818956, 0.0003546945517882705]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:3980:BACT:
+    variable_class: ScalarVariable
+    default_value: -1.02606236396241e-05
+    is_constant: false
+    value_range: [-0.0006343875429593027, 0.00044134663767181337]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:4080:BACT:
+    variable_class: ScalarVariable
+    default_value: -4.533000719675329e-06
+    is_constant: false
+    value_range: [-0.0004903700901195407, 0.0015412082429975271]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:4180:BACT:
+    variable_class: ScalarVariable
+    default_value: 1.6355132174794562e-05
+    is_constant: false
+    value_range: [-0.000343025429174304, 0.0018032232765108347]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:4280:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.849976489320397e-05
+    is_constant: false
+    value_range: [-0.0007666326127946377, 0.0016142847016453743]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:4380:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.179173215059564e-05
+    is_constant: false
+    value_range: [-0.0003590460983105004, 0.0008126827888190746]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:4480:BACT:
+    variable_class: ScalarVariable
+    default_value: 4.896923928754404e-05
+    is_constant: false
+    value_range: [-0.0010996756609529257, 0.0009257500641979277]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:4580:BACT:
+    variable_class: ScalarVariable
+    default_value: 1.2320911082497332e-05
+    is_constant: false
+    value_range: [-0.0010677280370146036, 0.0009525191853754222]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:4680:BACT:
+    variable_class: ScalarVariable
+    default_value: 2.7388892931412556e-07
+    is_constant: false
+    value_range: [-0.0009333300986327231, 0.001051435712724924]
+    value_range_tolerance: 1.0e-08
+  YCOR:UNDH:4780:BACT:
+    variable_class: ScalarVariable
+    default_value: 6.404742407539743e-07
+    is_constant: false
+    value_range: [-0.0011299042962491512, 0.002440386451780796]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:1495:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.210250854492188
+    is_constant: false
+    value_range: [12.887749671936035, 20.340749740600586]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:1595:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.039749145507812
+    is_constant: false
+    value_range: [12.815250396728516, 20.22825050354004]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:1695:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.293500900268555
+    is_constant: false
+    value_range: [12.966750144958496, 20.49049949645996]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:1795:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.266000747680664
+    is_constant: false
+    value_range: [12.730250358581543, 20.526750564575195]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:1895:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.25724983215332
+    is_constant: false
+    value_range: [12.88325023651123, 21.66925048828125]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:1995:GapAct:
+    variable_class: ScalarVariable
+    default_value: 16.808000564575195
+    is_constant: false
+    value_range: [12.526000022888184, 19.975250244140625]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:2095:GapAct:
+    variable_class: ScalarVariable
+    default_value: 14.052499771118164
+    is_constant: false
+    value_range: [12.0, 21.5627498626709]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:2295:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.270000457763672
+    is_constant: false
+    value_range: [12.974749565124512, 20.506500244140625]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:2395:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.201250076293945
+    is_constant: false
+    value_range: [12.9350004196167, 20.556499481201172]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:2495:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.222049713134766
+    is_constant: false
+    value_range: [12.937049865722656, 20.527050018310547]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:2595:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.30175018310547
+    is_constant: false
+    value_range: [13.012999534606934, 20.85849952697754]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:2695:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.176250457763672
+    is_constant: false
+    value_range: [12.955499649047852, 20.53474998474121]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:2795:GapAct:
+    variable_class: ScalarVariable
+    default_value: 13.46975040435791
+    is_constant: false
+    value_range: [12.000499725341797, 21.482999801635742]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:2995:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.116500854492188
+    is_constant: false
+    value_range: [12.864500045776367, 20.413249969482422]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:3095:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.363250732421875
+    is_constant: false
+    value_range: [13.017999649047852, 20.562999725341797]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:3195:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.39525032043457
+    is_constant: false
+    value_range: [13.081999778747559, 20.695249557495117]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:3295:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.398000717163086
+    is_constant: false
+    value_range: [13.010000228881836, 20.634000778198242]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:3395:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.300800323486328
+    is_constant: false
+    value_range: [12.949299812316895, 21.143049240112305]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:3495:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.153749465942383
+    is_constant: false
+    value_range: [12.844249725341797, 20.45050048828125]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:3595:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.56475067138672
+    is_constant: false
+    value_range: [12.720250129699707, 20.48324966430664]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:3695:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.39430046081543
+    is_constant: false
+    value_range: [12.975799560546875, 20.710050582885742]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:3795:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.521499633789062
+    is_constant: false
+    value_range: [13.030750274658203, 20.782249450683594]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:3895:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.295000076293945
+    is_constant: false
+    value_range: [12.86050033569336, 21.09600067138672]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:3995:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.576000213623047
+    is_constant: false
+    value_range: [13.116499900817871, 20.958499908447266]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:4095:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.427249908447266
+    is_constant: false
+    value_range: [12.530500411987305, 20.88075065612793]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:4195:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.691999435424805
+    is_constant: false
+    value_range: [12.666500091552734, 20.63825035095215]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:4295:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.789749145507812
+    is_constant: false
+    value_range: [12.772749900817871, 20.79224967956543]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:4395:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.92799949645996
+    is_constant: false
+    value_range: [12.774499893188477, 20.626750946044922]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:4495:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.963050842285156
+    is_constant: false
+    value_range: [12.805549621582031, 20.787050247192383]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:4595:GapAct:
+    variable_class: ScalarVariable
+    default_value: 17.905250549316406
+    is_constant: false
+    value_range: [12.77025032043457, 21.149999618530273]
+    value_range_tolerance: 1.0e-08
+  PHAS:UNDH:4695:GapAct:
+    variable_class: ScalarVariable
+    default_value: 18.09149932861328
+    is_constant: false
+    value_range: [12.646750450134277, 20.464500427246094]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:1450:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.367216110229492
+    is_constant: false
+    value_range: [7.211716175079346, 7.884366035461426]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:1550:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.312699794769287
+    is_constant: false
+    value_range: [7.221199989318848, 7.826600074768066]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:1650:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.355899810791016
+    is_constant: false
+    value_range: [7.221499919891357, 7.876699924468994]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:1750:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.356900215148926
+    is_constant: false
+    value_range: [7.267549991607666, 7.874899864196777]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:1850:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.370250225067139
+    is_constant: false
+    value_range: [7.281449794769287, 7.8944501876831055]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:1950:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.379650115966797
+    is_constant: false
+    value_range: [7.217599868774414, 7.90369987487793]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:2050:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.42140007019043
+    is_constant: false
+    value_range: [7.33489990234375, 7.946450233459473]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:2250:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.3894500732421875
+    is_constant: false
+    value_range: [7.2131500244140625, 7.909049987792969]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:2350:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.347949981689453
+    is_constant: false
+    value_range: [7.2086501121521, 7.878749847412109]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:2450:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.401400089263916
+    is_constant: false
+    value_range: [7.215050220489502, 7.921750068664551]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:2550:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.383749961853027
+    is_constant: false
+    value_range: [7.21619987487793, 7.903200149536133]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:2650:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.387149810791016
+    is_constant: false
+    value_range: [7.210050106048584, 7.909450054168701]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:2750:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.355249881744385
+    is_constant: false
+    value_range: [7.2141499519348145, 7.872250080108643]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:2950:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.350599765777588
+    is_constant: false
+    value_range: [7.210700035095215, 7.877999782562256]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:3050:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.39139986038208
+    is_constant: false
+    value_range: [7.210750102996826, 7.9143500328063965]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:3150:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.362599849700928
+    is_constant: false
+    value_range: [7.209350109100342, 7.89169979095459]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:3250:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.306099891662598
+    is_constant: false
+    value_range: [7.207300186157227, 7.829500198364258]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:3350:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.356200218200684
+    is_constant: false
+    value_range: [7.208600044250488, 7.881450176239014]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:3450:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.389245986938477
+    is_constant: false
+    value_range: [7.209646224975586, 7.911645889282227]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:3550:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.367249965667725
+    is_constant: false
+    value_range: [7.216249942779541, 7.882850170135498]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:3650:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.336050033569336
+    is_constant: false
+    value_range: [7.210050106048584, 7.854499816894531]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:3750:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.396749973297119
+    is_constant: false
+    value_range: [7.214600086212158, 7.911349773406982]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:3850:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.43025016784668
+    is_constant: false
+    value_range: [7.211750030517578, 7.946899890899658]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:3950:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.381350040435791
+    is_constant: false
+    value_range: [7.220900058746338, 7.889500141143799]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:4050:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.410449981689453
+    is_constant: false
+    value_range: [7.219600200653076, 7.92080020904541]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:4150:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.387400150299072
+    is_constant: false
+    value_range: [7.240049839019775, 7.895199775695801]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:4250:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.439849853515625
+    is_constant: false
+    value_range: [7.216949939727783, 7.9274001121521]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:4350:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.411749839782715
+    is_constant: false
+    value_range: [7.213399887084961, 7.924499988555908]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:4450:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.389150142669678
+    is_constant: false
+    value_range: [7.216450214385986, 7.899099826812744]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:4550:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.371799945831299
+    is_constant: false
+    value_range: [7.212649822235107, 7.874450206756592]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:4650:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.401549816131592
+    is_constant: false
+    value_range: [7.212299823760986, 7.9145002365112305]
+    value_range_tolerance: 1.0e-08
+  USEG:UNDH:4750:GapAct:
+    variable_class: ScalarVariable
+    default_value: 7.516550064086914
+    is_constant: false
+    value_range: [7.210750102996826, 8.0]
+    value_range_tolerance: 1.0e-08
+output_variables:
+  GDET:FEE1:241:ENRC: {variable_class: ScalarVariable, is_constant: false, value_range_tolerance: 1.0e-08}
