@@ -3,7 +3,7 @@
 #SBATCH -G 1                # Number of GPUs
 #SBATCH --job-name=fel_model_gpu
 #SBATCH --partition=ampere           # GPU partition
-#SBATCH --account=ad:ard-online@ampere  # SLAC account
+#SBATCH --account=ad:ard-online@ampere  # SLAC account ad:ard-online@ampere
 #SBATCH --cpus-per-task=8             # CPU cores for data loading (num_workers)
 #SBATCH --mem=256G                    # Memory per node
 #SBATCH -t 72:00:00                 # Time limit
@@ -51,10 +51,15 @@ print("CUDA available:", torch.cuda.is_available())
 print("Current device:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU")
 PYCODE
 
+source /sdf/data/ad/ard/u/zihanzhu/miniconda3/bin/activate ml_gpu
+
 python train_fel_model.py \
-    --epochs 620 \
-    --batch_size 256 \
+    --epochs 100 \
+    --batch_size 512 \
     --subsample_step 1 \
-    --resume_from /sdf/scratch/users/z/zihanzhu/fel_tuning/checkpoints/19650505/epoch_600.pt
+    --model_path /sdf/data/ad/ard/u/zihanzhu/ml/lcls_fel_tuning/model/2026-03-09_20-45-09_nn_retrain/ \
+    # --resume_from /sdf/scratch/users/z/zihanzhu/fel_tuning/checkpoints/22654774/epoch_180.pt \
+
+
 
 echo "End time:     $(date)"

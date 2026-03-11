@@ -9,6 +9,7 @@ Usage:
     python train_fel_model.py --resume_from /path/to/checkpoint.pt
     sbatch train_fel_model.slurm  # On SLURM cluster
 """
+
 import os
 import gc
 import logging
@@ -17,7 +18,7 @@ import warnings
 import json
 from datetime import datetime
 from typing import Tuple, List, Dict, Optional
-
+import logging
 import pandas as pd
 import numpy as np
 import torch
@@ -28,7 +29,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from botorch. models. transforms. input import AffineInputTransform
 import time
-
+from lume_model.utils import variables_from_yaml, variables_as_yaml
+from lume_model.variables import ScalarVariable
 # Suppress warnings
 warnings.filterwarnings("ignore")
 
@@ -70,9 +72,10 @@ def parse_arguments():
                         help="Path to checkpoint to resume from")
     parser.add_argument("--save_every", type=int, default=30,
                         help="Save checkpoint every N epochs")
-
+        # ⭐ PARSE FIRST
     args = parser.parse_args()
     
+    # ⭐ ADD VALIDATION
     if args.model_path and args.resume_from:
         parser.error("Cannot specify both --model_path and --resume_from.  Choose one.")
     
@@ -122,7 +125,6 @@ def dataset_filter(dataset: pd.DataFrame, log_top_n: int = 5, logger=None) -> pd
         Filtered dataframe
     """
     if logger is None:
-        import logging
         logger = logging.getLogger(__name__)
     
     total_samples = len(dataset)
@@ -142,13 +144,14 @@ def dataset_filter(dataset: pd.DataFrame, log_top_n: int = 5, logger=None) -> pd
         'L1S_S_PV < 0': dataset['ACCL:LI21:1:L1S_S_PV'] < 0,
         'L1S_S_AV > 100': dataset['ACCL:LI21:1:L1S_S_AV'] > 100,
         'LI22 ADES 2000-6000': (dataset['ACCL:LI22:1:ADES'] > 2000) & (dataset['ACCL:LI22:1:ADES'] < 6000),
-        'XRMS 250-370': (dataset['XRMS on VCC'] > 250) & (dataset['XRMS on VCC'] < 370),
-        'YRMS 250-370': (dataset['YRMS on VCC'] > 250) & (dataset['YRMS on VCC'] < 370),
-        'Intensity 0.1-4': (dataset['hxr_pulse_intensity'] > 0.1) & (dataset['hxr_pulse_intensity'] < 4),
-        'Charge at gun 240-275': (dataset['Charge at gun [pC]'] > 240) & (dataset['Charge at gun [pC]'] < 275),
-        'Charge after BC1 < 200': dataset['Charge after BC1 [pC]'] < 200,
-        'HXR e-energy > 8': dataset['HXR electron energy [GeV]'] > 8,
-        'HXR photon > 7000': dataset['HXR photon energy [eV]'] > 7000,
+        'XRMS 250-370': (dataset['CAMR:IN20:186:XRMS'] > 250) & (dataset['CAMR:IN20:186:XRMS'] < 380),
+        'YRMS 250-370': (dataset['CAMR:IN20:186:YRMS'] > 250) & (dataset['CAMR:IN20:186:YRMS'] < 380),
+        'Intensity 0.1-4': (dataset['GDET:FEE1:241:ENRC'] > 0.1) & (dataset['GDET:FEE1:241:ENRC'] < 4),
+        'Charge at gun 240-275': (dataset['SIOC:SYS0:ML00:CALC038'] > 240) & (dataset['SIOC:SYS0:ML00:CALC038'] < 275),
+        'Charge after BC1 < 200': dataset['SIOC:SYS0:ML00:CALC252'] < 200,
+        'HXR e-energy > 8': dataset['BEND:DMPH:400:BACT'] > 8,
+        'HXR photon > 7000': dataset['SIOC:SYS0:ML00:AO627'] > 7000,
+        # 'HXR photon 9.5keV-10keV': (dataset['SIOC:SYS0:ML00:AO627'] > 9500) & (dataset['SIOC:SYS0:ML00:AO627']<10000),
     }
     
     # Apply each filter and track impact
@@ -170,13 +173,13 @@ def dataset_filter(dataset: pd.DataFrame, log_top_n: int = 5, logger=None) -> pd
     # PHYSICAL PV BOUNDS (grouped by category)
     # ============================================================================
     
-    XCOR_EXCLUSIONS = ['XCOR:UNDH:4780:BCTRL']
+    XCOR_EXCLUSIONS = ['XCOR:UNDH:4780:BACT']
     YCOR_EXCLUSIONS = []
     
     # ---- Undulator X Correctors ----
     xcor_cols = [col for col in dataset.columns 
                  if 'XCOR:UNDH:' in col 
-                 and ':BCTRL' in col 
+                 and ':BACT' in col 
                  and col not in XCOR_EXCLUSIONS]
     
     if xcor_cols:
@@ -196,7 +199,7 @@ def dataset_filter(dataset: pd.DataFrame, log_top_n: int = 5, logger=None) -> pd
     # ---- Undulator Y Correctors ----
     ycor_cols = [col for col in dataset.columns 
                  if 'YCOR:UNDH:' in col 
-                 and ':BCTRL' in col 
+                 and ':BACT' in col 
                  and col not in YCOR_EXCLUSIONS]
     
     if ycor_cols:
@@ -214,7 +217,7 @@ def dataset_filter(dataset: pd.DataFrame, log_top_n: int = 5, logger=None) -> pd
         condition &= ycor_condition
     
     # ---- Phase Shifter Gaps ----
-    phas_cols = [col for col in dataset.columns if 'PHAS:UNDH:' in col and ':GapDes' in col]
+    phas_cols = [col for col in dataset.columns if 'PHAS:UNDH:' in col and ':GapAct' in col]
     if phas_cols:
         phas_condition = pd.Series(True, index=dataset.index)
         for col in phas_cols:
@@ -230,7 +233,7 @@ def dataset_filter(dataset: pd.DataFrame, log_top_n: int = 5, logger=None) -> pd
         condition &= phas_condition
     
     # ---- Undulator Segment Gaps ----
-    useg_cols = [col for col in dataset.columns if 'USEG:UNDH:' in col and ':GapDes' in col]
+    useg_cols = [col for col in dataset.columns if 'USEG:UNDH:' in col and ':GapAct' in col]
     if useg_cols:
         useg_condition = pd.Series(True, index=dataset.index)
         for col in useg_cols:
@@ -352,90 +355,81 @@ def detect_low_variability_pvs_percentile(df, input_cols, percentile_threshold=0
         'stats': pv_stats
     }
 
-def clip_outliers_iqr(df, columns, iqr_multiplier=3.0, min_samples=100):
+def clip_outliers_percentile(df, columns, lower_pct=1, upper_pct=99, min_samples=100):
     """
-    Clip outliers using IQR method for each column independently. 
-    
-    Removes values outside [Q25 - k*IQR, Q75 + k*IQR]
+    Remove outliers based on percentiles.
     
     Args:
         df: DataFrame
         columns: List of column names to clip
-        iqr_multiplier: How many IQRs to allow (default 3.0 = ~99.7% coverage)
-        min_samples:  Minimum samples required per PV
+        lower_pct: Lower percentile threshold (default: 1 = P1)
+        upper_pct: Upper percentile threshold (default: 99 = P99)
+        min_samples: Minimum samples required per PV
         
     Returns:
         df_cleaned: DataFrame with outliers removed
         outlier_report: Dict with statistics per PV
     """
-    import numpy as np
-    import pandas as pd
-    
     df_cleaned = df.copy()
     outlier_report = {}
     total_rows_original = len(df)
     
+    combined_mask = pd.Series(True, index=df.index)
+    
+    logger.info(f"Filtering {len(columns)} columns for outliers...")
+    logger.info(f"Method: Percentile range [P{lower_pct}, P{upper_pct}]")
+    
     for col in columns:
-        if col not in df. columns:
+        if col not in df.columns:
             continue
         
-        data = df[col].replace([np.inf, -np. inf], np.nan).dropna()
+        data = df[col].replace([np.inf, -np.inf], np.nan).dropna()
         
         if len(data) < min_samples:
-            logger.warning(f"{col}: Too few samples ({len(data)}), skipping outlier filter")
+            logger.debug(f"{col}: Too few samples ({len(data)}), skipping")
             continue
         
-        # Calculate IQR bounds
-        q25, q75 = data.quantile([0.25, 0.75])
-        iqr = q75 - q25
+        # Calculate percentile bounds
+        lower_bound = data.quantile(lower_pct / 100)
+        upper_bound = data.quantile(upper_pct / 100)
         
-        lower_bound = q25 - iqr_multiplier * iqr
-        upper_bound = q75 + iqr_multiplier * iqr
+        # Create mask
+        valid_mask = (df[col] >= lower_bound) & (df[col] <= upper_bound)
+        combined_mask &= valid_mask
         
         # Count outliers
-        outliers = ((df[col] < lower_bound) | (df[col] > upper_bound))
-        n_outliers = outliers.sum()
+        n_outliers = (~valid_mask).sum()
         outlier_pct = (n_outliers / len(df)) * 100
-        
-        # Create mask for this column
-        valid_mask = (df[col] >= lower_bound) & (df[col] <= upper_bound)
-        
-        # Apply filter (accumulate masks across all columns)
-        if col == columns[0]: 
-            combined_mask = valid_mask
-        else:
-            combined_mask = combined_mask & valid_mask
         
         outlier_report[col] = {
             'n_outliers': n_outliers,
             'outlier_pct': outlier_pct,
-            'lower_bound': lower_bound,
-            'upper_bound': upper_bound,
-            'q25': q25,
-            'q75': q75,
-            'iqr': iqr
+            'lower_bound': float(lower_bound),
+            'upper_bound': float(upper_bound),
+            'lower_percentile': lower_pct,
+            'upper_percentile': upper_pct,
         }
         
         if n_outliers > 0:
-            logger.info(f"{col}:  Removed {n_outliers} outliers ({outlier_pct:.2f}%) "
-                       f"outside [{lower_bound:.4f}, {upper_bound:.4f}]")
+            logger.debug(f"{col}: {n_outliers} outliers ({outlier_pct:.2f}%) "
+                        f"outside [{lower_bound:.4f}, {upper_bound:.4f}]")
     
     # Apply combined mask
-    df_cleaned = df[combined_mask]. copy()
+    df_cleaned = df[combined_mask].copy()
     
     total_removed = total_rows_original - len(df_cleaned)
     removal_pct = (total_removed / total_rows_original) * 100
     
     logger.info("=" * 70)
-    logger.info(f"OUTLIER FILTERING SUMMARY")
+    logger.info(f"PERCENTILE OUTLIER FILTERING SUMMARY")
     logger.info("=" * 70)
-    logger.info(f"Original samples: {total_rows_original}")
-    logger.info(f"Cleaned samples:   {len(df_cleaned)}")
-    logger.info(f"Removed samples:  {total_removed} ({removal_pct:.2f}%)")
+    logger.info(f"Range: P{lower_pct} to P{upper_pct}")
+    logger.info(f"Original samples: {total_rows_original:,}")
+    logger.info(f"Cleaned samples:  {len(df_cleaned):,}")
+    logger.info(f"Removed samples:  {total_removed:,} ({removal_pct:.2f}%)")
     logger.info("=" * 70)
     
     return df_cleaned, outlier_report
-
 
 def print_invalid_pv_summary(
     manually_invalid_pvs, 
@@ -578,17 +572,20 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
     logger.info("DATA LOADING & PREPROCESSING")
     logger.info("=" * 70)
     
-    file_dir = '/sdf/data/ad/ard/u/zihanzhu/ml/lcls_fel_tuning/dataset/'
+    file_dir = '/sdf/data/ad/ard/u/zihanzhu/ml/lcls_fel_tuning/dataset_updated/'
     pickle_files = [
+        # '20260218_MD_1st.pkl',
+        'hxr_archiver_2026-02.pkl', 'hxr_archiver_2026-03.pkl',
+        'hxr_archiver_2026-01.pkl', 'hxr_archiver_2025-12.pkl',
         'hxr_archiver_2025-11.pkl', 'hxr_archiver_2025-10.pkl', 'hxr_archiver_2025-09.pkl',
         'hxr_archiver_2025-06.pkl', 'hxr_archiver_2025-05.pkl', 'hxr_archiver_2025-04.pkl',
         'hxr_archiver_2025-03.pkl', 'hxr_archiver_2025-02.pkl', 'hxr_archiver_2025-01.pkl',
-        'hxr_archiver_2024-12.pkl', 'hxr_archiver_2024-11.pkl', 'hxr_archiver_2024-10.pkl',
-        'hxr_archiver_2024-09.pkl', 'hxr_archiver_2024-08.pkl', 'hxr_archiver_2024-07.pkl',
-        'hxr_archiver_2024-06.pkl', 'hxr_archiver_2024-05.pkl', 'hxr_archiver_2024-04.pkl',
-        'hxr_archiver_2024-03.pkl', 'hxr_archiver_2024-02.pkl', 'hxr_archiver_2024-01.pkl',
-        'hxr_archiver_2023-11.pkl', 'hxr_archiver_2023-10.pkl', 'hxr_archiver_2023-09.pkl',
-        'hxr_archiver_2023-08.pkl', 'hxr_archiver_2023-07.pkl',
+        # 'hxr_archiver_2024-12.pkl', 'hxr_archiver_2024-11.pkl', 'hxr_archiver_2024-10.pkl',
+        # 'hxr_archiver_2024-09.pkl', 'hxr_archiver_2024-08.pkl', 'hxr_archiver_2024-07.pkl',
+        # 'hxr_archiver_2024-06.pkl', 'hxr_archiver_2024-05.pkl', 'hxr_archiver_2024-04.pkl',
+        # 'hxr_archiver_2024-03.pkl', 'hxr_archiver_2024-02.pkl', 'hxr_archiver_2024-01.pkl',
+        # 'hxr_archiver_2023-11.pkl', 'hxr_archiver_2023-10.pkl', 'hxr_archiver_2023-09.pkl',
+        # 'hxr_archiver_2023-08.pkl', 'hxr_archiver_2023-07.pkl',
     ]
     
     logger.info(f"Loading {len(pickle_files)} pickle files")
@@ -607,6 +604,7 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
             temp_df = pd.read_pickle(full_path)
             original_count = len(temp_df)
             
+            # ⭐ Apply filter with diagnostics
             temp_df = dataset_filter(temp_df, log_top_n=5, logger=logger)
             
             filtered_count = len(temp_df)
@@ -661,23 +659,23 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
         ("2025-04-02 07:00", "2025-04-02 18:00"),
         ("2025-03-26 15:00", "2025-03-27 02:00"),
         ("2025-02-05 07:00", "2025-02-05 17:00"),
-        ("2024-11-21 08:30", "2024-11-21 18:00"),
-        ("2024-11-12 16:00", "2024-11-13 02:00"),
-        ("2024-11-06 07:30", "2024-11-06 15:30"),
-        ("2024-10-15 07:00", "2024-10-16 08:00"),
-        ("2024-09-04 21:00", "2024-09-05 15:30"),
-        ("2024-06-06 20:30", "2024-06-07 04:30"),
-        ("2024-05-09 15:00", "2024-05-09 22:00"),
-        ("2024-03-28 10:00", "2024-03-29 02:00"),
-        ("2024-03-20 17:00", "2024-03-21 01:30"),
-        ("2024-02-14 19:00", "2024-02-15 03:00"),
-        ("2023-11-16 08:00", "2023-11-16 17:00"),
-        ("2023-11-09 16:00", "2023-11-10 04:00"),
-        ("2023-11-01 13:00", "2023-11-01 22:00"),
-        ("2023-10-05 09:00", "2023-10-06 05:00"),
-        ("2023-09-27 21:00", "2023-09-28 03:00"),
-        ("2023-09-21 09:00", "2023-09-21 19:00"),
-        ("2023-08-30 06:00", "2023-08-30 18:00"),
+        # ("2024-11-21 08:30", "2024-11-21 18:00"),
+        # ("2024-11-12 16:00", "2024-11-13 02:00"),
+        # ("2024-11-06 07:30", "2024-11-06 15:30"),
+        # ("2024-10-15 07:00", "2024-10-16 08:00"),
+        # ("2024-09-04 21:00", "2024-09-05 15:30"),
+        # ("2024-06-06 20:30", "2024-06-07 04:30"),
+        # ("2024-05-09 15:00", "2024-05-09 22:00"),
+        # ("2024-03-28 10:00", "2024-03-29 02:00"),
+        # ("2024-03-20 17:00", "2024-03-21 01:30"),
+        # ("2024-02-14 19:00", "2024-02-15 03:00"),
+        # ("2023-11-16 08:00", "2023-11-16 17:00"),
+        # ("2023-11-09 16:00", "2023-11-10 04:00"),
+        # ("2023-11-01 13:00", "2023-11-01 22:00"),
+        # ("2023-10-05 09:00", "2023-10-06 05:00"),
+        # ("2023-09-27 21:00", "2023-09-28 03:00"),
+        # ("2023-09-21 09:00", "2023-09-21 19:00"),
+        # ("2023-08-30 06:00", "2023-08-30 18:00"),
     ]
     
     exclusion_mask = pd.Series(False, index=final_df.index)
@@ -699,28 +697,30 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
     # ---- Apply Validation Windows (Time-based split) ----
     logger.info("Applying validation windows...")
     validation_windows = [
-        ("2025-11-25 00:00", "2025-12-05 00:00"),
-        ("2025-10-25 00:00", "2025-11-05 00:00"),
-        ("2025-09-25 00:00", "2025-10-05 00:00"),
-        ("2025-08-25 00:00", "2025-09-05 00:00"),
-        ("2025-06-25 00:00", "2025-07-05 00:00"),
-        ("2025-05-25 00:00", "2025-06-05 00:00"),
-        ("2025-04-25 00:00", "2025-05-05 00:00"),
-        ("2025-03-25 00:00", "2025-04-05 00:00"),
-        ("2025-02-25 00:00", "2025-03-05 00:00"),
-        ("2024-11-25 00:00", "2024-12-05 00:00"),
-        ("2024-10-25 00:00", "2024-11-05 00:00"),
-        ("2024-09-25 00:00", "2024-10-05 00:00"),
-        ("2024-08-25 00:00", "2024-09-05 00:00"),
-        ("2024-06-25 00:00", "2024-07-05 00:00"),
-        ("2024-05-25 00:00", "2024-06-05 00:00"),
-        ("2024-04-25 00:00", "2024-05-05 00:00"),
-        ("2024-03-25 00:00", "2024-04-05 00:00"),
-        ("2024-02-25 00:00", "2024-03-05 00:00"),
-        ("2023-10-25 00:00", "2023-11-05 00:00"),
-        ("2023-09-25 00:00", "2023-10-05 00:00"),
-        ("2023-08-25 00:00", "2023-09-05 00:00"),
-        ("2023-07-25 00:00", "2023-08-05 00:00"),
+        ("2026-02-28 00:00", "2026-03-03 00:00"),
+        ("2026-01-28 00:00", "2026-02-03 00:00"),
+        ("2025-11-28 00:00", "2025-12-03 00:00"),
+        ("2025-10-28 00:00", "2025-11-03 00:00"),
+        ("2025-09-28 00:00", "2025-10-03 00:00"),
+        ("2025-08-28 00:00", "2025-09-03 00:00"),
+        ("2025-06-28 00:00", "2025-07-03 00:00"),
+        ("2025-05-28 00:00", "2025-06-03 00:00"),
+        ("2025-04-28 00:00", "2025-05-03 00:00"),
+        ("2025-03-28 00:00", "2025-04-03 00:00"),
+        ("2025-02-28 00:00", "2025-03-03 00:00"),
+        # ("2024-11-28 00:00", "2024-12-03 00:00"),
+        # ("2024-10-28 00:00", "2024-11-03 00:00"),
+        # ("2024-09-28 00:00", "2024-10-03 00:00"),
+        # ("2024-08-28 00:00", "2024-09-03 00:00"),
+        # ("2024-06-28 00:00", "2024-07-03 00:00"),
+        # ("2024-05-28 00:00", "2024-06-03 00:00"),
+        # ("2024-04-28 00:00", "2024-05-03 00:00"),
+        # ("2024-03-28 00:00", "2024-04-03 00:00"),
+        # ("2024-02-28 00:00", "2024-03-03 00:00"),
+        # ("2023-10-28 00:00", "2023-11-03 00:00"),
+        # ("2023-09-28 00:00", "2023-10-03 00:00"),
+        # ("2023-08-28 00:00", "2023-09-03 00:00"),
+        # ("2023-07-28 00:00", "2023-08-03 00:00"),
     ]
     
     val_mask = pd.Series(False, index=final_df.index)
@@ -733,103 +733,190 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
     final_df = final_df[~val_mask]. copy()
     logger.info(f"Validation samples:{len(val_df)}")
     logger.info(f"Training/test samples:{len(final_df)}")
-
+    # ============================================================================
+    # ⭐ OUTLIER FILTERING (Apply for BOTH FRESH and RETRAIN!)
+    # ============================================================================
+    
+    # ⭐ ALWAYS apply P1-P99 filtering (for consistency)
+    logger.info("\n" + "=" * 70)
+    logger.info("OUTLIER FILTERING (PERCENTILE METHOD)")
+    logger.info("=" * 70)
+    
+    if input_cols_override is None:  # FRESH training mode
+        logger.info("Mode: FRESH TRAINING - Applying outlier filtering")
+    else:  # RETRAIN mode
+        logger.info("Mode: RETRAIN - Applying outlier filtering")
+        logger.info("  (Ensuring data distribution matches original training)")
+    
+    # Get all numeric columns except output
+    numeric_cols = final_df.select_dtypes(include=[np.number]).columns.tolist()
+    cols_to_filter = [c for c in numeric_cols if c not in ['GDET:FEE1:241:ENRC']]
+    
+    logger.info(f"Filtering {len(cols_to_filter)} numeric columns (P1-P99 range)...")
+    
+    original_count = len(final_df)
+    final_df, outlier_report = clip_outliers_percentile(
+        final_df, 
+        columns=cols_to_filter,
+        lower_pct=0,
+        upper_pct=100,
+        min_samples=100
+    )
+    
+    filtered_count = len(final_df)
+    logger.info(f"\n✓ Outlier filtering complete:")
+    logger.info(f"  Samples: {original_count:,} → {filtered_count:,} "
+               f"({(1 - filtered_count/original_count)*100:.2f}% removed)")
+    
+    # Save outlier report
+    if ckpt_dir := args.checkpoint_dir or os.environ.get("SCRATCH"):
+        os.makedirs(ckpt_dir, exist_ok=True)
+        import json
+        report_path = os.path.join(ckpt_dir, 'outlier_report.json')
+        with open(report_path, 'w') as f:
+            # Convert numpy types to native Python for JSON serialization
+            serializable_report = {
+                k: {kk: float(vv) if isinstance(vv, (np.floating, np.integer)) else vv 
+                    for kk, vv in v.items()}
+                for k, v in outlier_report.items()
+            }
+            json.dump(serializable_report, f, indent=2)
+        logger.info(f"  Outlier report saved: {report_path}")
+    
+    
+    else:
+        logger.info("\n" + "=" * 70)
+        logger.info("OUTLIER FILTERING")
+        logger.info("=" * 70)
+        logger.info("Mode: RETRAIN - Skipping outlier filtering")
+        logger.info("  (Using same data distribution as original training)")
+        logger.info("=" * 70)
     # ============================================================================
     # FEATURE SELECTION & INVALID PV REMOVAL
     # ============================================================================
-    if input_cols_override is not None: 
+    # In load_and_preprocess_data(), in the RETRAINING MODE section:
+    if input_cols_override is not None:
+        # RETRAINING MODE: Use pre-defined feature set
         logger.info("=" * 70)
-        logger.info("RETRAINING MODE:  Using pre-defined feature set")
+        logger.info("RETRAINING MODE: Using pre-defined feature set")
         logger.info("=" * 70)
-        logger.info(f"Loading {len(input_cols_override)} input features from model")
+        logger.info(f"Loading {len(input_cols_override)} input features from pre-trained model")
         
         input_cols = input_cols_override
-        output_cols = ['hxr_pulse_intensity']
+        output_cols = ['GDET:FEE1:241:ENRC']
         
-        # Verify all required columns exist
-        missing_cols = [c for c in input_cols if c not in final_df.columns]
-        if missing_cols:
-            logger. error(f"❌ Missing {len(missing_cols)} required columns from pre-trained model!")
-            logger.error(f"First 10 missing:  {missing_cols[:10]}")
-            raise ValueError(f"Cannot retrain:  {len(missing_cols)} required features missing from data")
+        # Check which features are available
+        available_features = [c for c in input_cols if c in final_df.columns]
+        missing_features = [c for c in input_cols if c not in final_df.columns]
+        
+        if missing_features:
+            logger.error(f"❌ Missing {len(missing_features)} required features from pre-trained model!")
+            logger.error(f"\nMissing features:")
+            for feat in missing_features[:10]:
+                logger.error(f"     - {feat}")
+            if len(missing_features) > 10:
+                logger.error(f"     ... and {len(missing_features)-10} more")
+            
+            logger.error(f"\n💡 SOLUTIONS:")
+            logger.error(f"   1. Use data from the same time period as original training")
+            logger.error(f"   2. Check if PV names changed")
+            logger.error(f"   3. Train from scratch on new data (remove --model_path)")
+            
+            raise ValueError(f"Cannot retrain: {len(missing_features)} required features missing")
         
         logger.info(f"✓ All {len(input_cols)} required features present in data")
+        
+        # Check for constant features (warning only, don't drop)
+        logger.info("\nChecking for constant features in new data...")
+        feature_ranges = final_df[input_cols].max() - final_df[input_cols].min()
+        constant_features = feature_ranges[feature_ranges == 0].index.tolist()
+        
+        if constant_features:
+            logger.warning(f"⚠️  {len(constant_features)} features are constant in new data:")
+            for feat in constant_features[:10]:
+                logger.warning(f"     - {feat}")
+            if len(constant_features) > 10:
+                logger.warning(f"     ... and {len(constant_features)-10} more")
+            logger.warning("\n   These features were NOT constant in original training.")
+            logger.warning("   They will be kept to match pre-trained model architecture.")
+            logger.warning("   This may indicate data distribution shift!")
+        else:
+            logger.info("✓ No constant features detected")
+        
         logger.info("=" * 70)
         
-        # Drop columns we don't need (optional, for memory)
-        cols_to_keep = input_cols + output_cols + [c for c in final_df. columns if c in ['timestamp']]
-        extra_cols = [c for c in final_df.columns if c not in cols_to_keep]
-        if extra_cols:
-            logger. info(f"Dropping {len(extra_cols)} unused columns to save memory")
-            final_df = final_df.drop(columns=extra_cols, errors='ignore')
-            val_df = val_df.drop(columns=extra_cols, errors='ignore')
+        # Keep ALL features from pre-trained model
+        cols_to_keep = input_cols + output_cols
+        final_df = final_df[cols_to_keep].copy()
+        if len(val_df) > 0:
+            val_df = val_df[cols_to_keep].copy()
         
-        # Skip to the end
         return final_df, val_df, input_cols, output_cols
     
+    # ⭐ FRESH TRAINING MODE: Detect features from data
     logger.info("=" * 70)
-    logger.info("FRESH TRAINING MODE:  Detecting features from data")
-    logger.info("=" * 70)
-    logger.info("FEATURE SELECTION & INVALID PV REMOVAL")
+    logger.info("FRESH TRAINING MODE: Detecting features from data")
     logger.info("=" * 70)
 
     
     # ---- Step 1:Define desired input features (hardcoded lists) ----
     RF_ampls = ['ACCL:LI21:1:L1S_S_AV', 'ACCL:LI21:180:L1X_S_AV', 'ACCL:LI22:1:ADES', 'ACCL:LI25:1:ADES']
     RF_phases = ['ACCL:LI21:1:L1S_S_PV', 'ACCL:LI21:180:L1X_S_PV', 'ACCL:LI22:1:PDES', 'ACCL:LI25:1:PDES']
-    vcc_profile = ['XRMS on VCC', 'YRMS on VCC']
-    
+    vcc_profile = ['CAMR:IN20:186:XRMS', 'CAMR:IN20:186:YRMS']
+    blen = ['BLEN:LI21:265:AIMAX1H', 'BLEN:LI24:886:BIMAX1H']
+    bcharge = ['SIOC:SYS0:ML00:CALC038', 'SIOC:SYS0:ML00:CALC252']  # at gun, after BC1
+    hxr_energy = ['BEND:DMPH:400:BACT','SIOC:SYS0:ML00:AO627']  # beam energy, photon energy
     undh_corr_x = [
-        'XCOR:UNDH:1380:BCTRL', 'XCOR:UNDH:1480:BCTRL', 'XCOR:UNDH:1580:BCTRL', 'XCOR:UNDH:1680:BCTRL',
-        'XCOR:UNDH:1780:BCTRL', 'XCOR:UNDH:1880:BCTRL', 'XCOR:UNDH:1980:BCTRL', 'XCOR:UNDH:2080:BCTRL',
-        'XCOR:UNDH:2180:BCTRL', 'XCOR:UNDH:2280:BCTRL', 'XCOR:UNDH:2380:BCTRL', 'XCOR:UNDH:2480:BCTRL',
-        'XCOR:UNDH:2580:BCTRL', 'XCOR:UNDH:2680:BCTRL', 'XCOR:UNDH:2780:BCTRL', 'XCOR:UNDH:2880:BCTRL',
-        'XCOR:UNDH:2980:BCTRL', 'XCOR:UNDH:3080:BCTRL', 'XCOR:UNDH:3180:BCTRL', 'XCOR:UNDH:3280:BCTRL',
-        'XCOR:UNDH:3380:BCTRL', 'XCOR:UNDH:3480:BCTRL', 'XCOR:UNDH:3580:BCTRL', 'XCOR:UNDH:3680:BCTRL',
-        'XCOR:UNDH:3780:BCTRL', 'XCOR:UNDH:3880:BCTRL', 'XCOR:UNDH:3980:BCTRL', 'XCOR:UNDH:4080:BCTRL',
-        'XCOR:UNDH:4180:BCTRL', 'XCOR:UNDH:4280:BCTRL', 'XCOR:UNDH:4380:BCTRL', 'XCOR:UNDH:4480:BCTRL',
-        'XCOR:UNDH:4580:BCTRL', 'XCOR:UNDH:4680:BCTRL', 'XCOR:UNDH:4780:BCTRL'
+        'XCOR:UNDH:1380:BACT', 'XCOR:UNDH:1480:BACT', 'XCOR:UNDH:1580:BACT', 'XCOR:UNDH:1680:BACT',
+        'XCOR:UNDH:1780:BACT', 'XCOR:UNDH:1880:BACT', 'XCOR:UNDH:1980:BACT', 'XCOR:UNDH:2080:BACT',
+        'XCOR:UNDH:2180:BACT', 'XCOR:UNDH:2280:BACT', 'XCOR:UNDH:2380:BACT', 'XCOR:UNDH:2480:BACT',
+        'XCOR:UNDH:2580:BACT', 'XCOR:UNDH:2680:BACT', 'XCOR:UNDH:2780:BACT', 'XCOR:UNDH:2880:BACT',
+        'XCOR:UNDH:2980:BACT', 'XCOR:UNDH:3080:BACT', 'XCOR:UNDH:3180:BACT', 'XCOR:UNDH:3280:BACT',
+        'XCOR:UNDH:3380:BACT', 'XCOR:UNDH:3480:BACT', 'XCOR:UNDH:3580:BACT', 'XCOR:UNDH:3680:BACT',
+        'XCOR:UNDH:3780:BACT', 'XCOR:UNDH:3880:BACT', 'XCOR:UNDH:3980:BACT', 'XCOR:UNDH:4080:BACT',
+        'XCOR:UNDH:4180:BACT', 'XCOR:UNDH:4280:BACT', 'XCOR:UNDH:4380:BACT', 'XCOR:UNDH:4480:BACT',
+        'XCOR:UNDH:4580:BACT', 'XCOR:UNDH:4680:BACT', 'XCOR:UNDH:4780:BACT'
     ]
     
     undh_corr_y = [
-        'YCOR:UNDH:1380:BCTRL', 'YCOR:UNDH:1480:BCTRL', 'YCOR:UNDH:1580:BCTRL', 'YCOR:UNDH:1680:BCTRL',
-        'YCOR:UNDH:1780:BCTRL', 'YCOR:UNDH:1880:BCTRL', 'YCOR:UNDH:1980:BCTRL', 'YCOR:UNDH:2080:BCTRL',
-        'YCOR:UNDH:2180:BCTRL', 'YCOR:UNDH:2280:BCTRL', 'YCOR:UNDH:2380:BCTRL', 'YCOR:UNDH:2480:BCTRL',
-        'YCOR:UNDH:2580:BCTRL', 'YCOR:UNDH:2680:BCTRL', 'YCOR:UNDH:2780:BCTRL', 'YCOR:UNDH:2880:BCTRL',
-        'YCOR:UNDH:2980:BCTRL', 'YCOR:UNDH:3080:BCTRL', 'YCOR:UNDH:3180:BCTRL', 'YCOR:UNDH:3280:BCTRL',
-        'YCOR:UNDH:3380:BCTRL', 'YCOR:UNDH:3480:BCTRL', 'YCOR:UNDH:3580:BCTRL', 'YCOR:UNDH:3680:BCTRL',
-        'YCOR:UNDH:3780:BCTRL', 'YCOR:UNDH:3880:BCTRL', 'YCOR:UNDH:3980:BCTRL', 'YCOR:UNDH:4080:BCTRL',
-        'YCOR:UNDH:4180:BCTRL', 'YCOR:UNDH:4280:BCTRL', 'YCOR:UNDH:4380:BCTRL', 'YCOR:UNDH:4480:BCTRL',
-        'YCOR:UNDH:4580:BCTRL', 'YCOR:UNDH:4680:BCTRL', 'YCOR:UNDH:4780:BCTRL'
+        'YCOR:UNDH:1380:BACT', 'YCOR:UNDH:1480:BACT', 'YCOR:UNDH:1580:BACT', 'YCOR:UNDH:1680:BACT',
+        'YCOR:UNDH:1780:BACT', 'YCOR:UNDH:1880:BACT', 'YCOR:UNDH:1980:BACT', 'YCOR:UNDH:2080:BACT',
+        'YCOR:UNDH:2180:BACT', 'YCOR:UNDH:2280:BACT', 'YCOR:UNDH:2380:BACT', 'YCOR:UNDH:2480:BACT',
+        'YCOR:UNDH:2580:BACT', 'YCOR:UNDH:2680:BACT', 'YCOR:UNDH:2780:BACT', 'YCOR:UNDH:2880:BACT',
+        'YCOR:UNDH:2980:BACT', 'YCOR:UNDH:3080:BACT', 'YCOR:UNDH:3180:BACT', 'YCOR:UNDH:3280:BACT',
+        'YCOR:UNDH:3380:BACT', 'YCOR:UNDH:3480:BACT', 'YCOR:UNDH:3580:BACT', 'YCOR:UNDH:3680:BACT',
+        'YCOR:UNDH:3780:BACT', 'YCOR:UNDH:3880:BACT', 'YCOR:UNDH:3980:BACT', 'YCOR:UNDH:4080:BACT',
+        'YCOR:UNDH:4180:BACT', 'YCOR:UNDH:4280:BACT', 'YCOR:UNDH:4380:BACT', 'YCOR:UNDH:4480:BACT',
+        'YCOR:UNDH:4580:BACT', 'YCOR:UNDH:4680:BACT', 'YCOR:UNDH:4780:BACT'
     ]
     
     undh_shifter = [
-        'PHAS:UNDH:1495:GapDes', 'PHAS:UNDH:1595:GapDes', 'PHAS:UNDH:1695:GapDes', 'PHAS:UNDH:1795:GapDes',
-        'PHAS:UNDH:1895:GapDes', 'PHAS:UNDH:1995:GapDes', 'PHAS:UNDH:2095:GapDes', 'PHAS:UNDH:2295:GapDes',
-        'PHAS:UNDH:2395:GapDes', 'PHAS:UNDH:2495:GapDes', 'PHAS:UNDH:2595:GapDes', 'PHAS:UNDH:2695:GapDes',
-        'PHAS:UNDH:2795:GapDes', 'PHAS:UNDH:2995:GapDes', 'PHAS:UNDH:3095:GapDes', 'PHAS:UNDH:3195:GapDes',
-        'PHAS:UNDH:3295:GapDes', 'PHAS:UNDH:3395:GapDes', 'PHAS:UNDH:3495:GapDes', 'PHAS:UNDH:3595:GapDes',
-        'PHAS:UNDH:3695:GapDes', 'PHAS:UNDH:3795:GapDes', 'PHAS:UNDH:3895:GapDes', 'PHAS:UNDH:3995:GapDes',
-        'PHAS:UNDH:4095:GapDes', 'PHAS:UNDH:4195:GapDes', 'PHAS:UNDH:4295:GapDes', 'PHAS:UNDH:4395:GapDes',
-        'PHAS:UNDH:4495:GapDes', 'PHAS:UNDH:4595:GapDes', 'PHAS:UNDH:4695:GapDes'
+        'PHAS:UNDH:1495:GapAct', 'PHAS:UNDH:1595:GapAct', 'PHAS:UNDH:1695:GapAct', 'PHAS:UNDH:1795:GapAct',
+        'PHAS:UNDH:1895:GapAct', 'PHAS:UNDH:1995:GapAct', 'PHAS:UNDH:2095:GapAct', 'PHAS:UNDH:2295:GapAct',
+        'PHAS:UNDH:2395:GapAct', 'PHAS:UNDH:2495:GapAct', 'PHAS:UNDH:2595:GapAct', 'PHAS:UNDH:2695:GapAct',
+        'PHAS:UNDH:2795:GapAct', 'PHAS:UNDH:2995:GapAct', 'PHAS:UNDH:3095:GapAct', 'PHAS:UNDH:3195:GapAct',
+        'PHAS:UNDH:3295:GapAct', 'PHAS:UNDH:3395:GapAct', 'PHAS:UNDH:3495:GapAct', 'PHAS:UNDH:3595:GapAct',
+        'PHAS:UNDH:3695:GapAct', 'PHAS:UNDH:3795:GapAct', 'PHAS:UNDH:3895:GapAct', 'PHAS:UNDH:3995:GapAct',
+        'PHAS:UNDH:4095:GapAct', 'PHAS:UNDH:4195:GapAct', 'PHAS:UNDH:4295:GapAct', 'PHAS:UNDH:4395:GapAct',
+        'PHAS:UNDH:4495:GapAct', 'PHAS:UNDH:4595:GapAct', 'PHAS:UNDH:4695:GapAct'
     ]
     
     undh_gap = [
-        'USEG:UNDH:1450:GapDes', 'USEG:UNDH:1550:GapDes', 'USEG:UNDH:1650:GapDes', 'USEG:UNDH:1750:GapDes',
-        'USEG:UNDH:1850:GapDes', 'USEG:UNDH:1950:GapDes', 'USEG:UNDH:2050:GapDes', 'USEG:UNDH:2250:GapDes',
-        'USEG:UNDH:2350:GapDes', 'USEG:UNDH:2450:GapDes', 'USEG:UNDH:2550:GapDes', 'USEG:UNDH:2650:GapDes',
-        'USEG:UNDH:2750:GapDes', 'USEG:UNDH:2950:GapDes', 'USEG:UNDH:3050:GapDes', 'USEG:UNDH:3150:GapDes',
-        'USEG:UNDH:3250:GapDes', 'USEG:UNDH:3350:GapDes', 'USEG:UNDH:3450:GapDes', 'USEG:UNDH:3550:GapDes',
-        'USEG:UNDH:3650:GapDes', 'USEG:UNDH:3750:GapDes', 'USEG:UNDH:3850:GapDes', 'USEG:UNDH:3950:GapDes',
-        'USEG:UNDH:4050:GapDes', 'USEG:UNDH:4150:GapDes', 'USEG:UNDH:4250:GapDes', 'USEG:UNDH:4350:GapDes',
-        'USEG:UNDH:4450:GapDes', 'USEG:UNDH:4550:GapDes', 'USEG:UNDH:4650:GapDes', 'USEG:UNDH:4750:GapDes'
+        'USEG:UNDH:1450:GapAct', 'USEG:UNDH:1550:GapAct', 'USEG:UNDH:1650:GapAct', 'USEG:UNDH:1750:GapAct',
+        'USEG:UNDH:1850:GapAct', 'USEG:UNDH:1950:GapAct', 'USEG:UNDH:2050:GapAct', 'USEG:UNDH:2250:GapAct',
+        'USEG:UNDH:2350:GapAct', 'USEG:UNDH:2450:GapAct', 'USEG:UNDH:2550:GapAct', 'USEG:UNDH:2650:GapAct',
+        'USEG:UNDH:2750:GapAct', 'USEG:UNDH:2950:GapAct', 'USEG:UNDH:3050:GapAct', 'USEG:UNDH:3150:GapAct',
+        'USEG:UNDH:3250:GapAct', 'USEG:UNDH:3350:GapAct', 'USEG:UNDH:3450:GapAct', 'USEG:UNDH:3550:GapAct',
+        'USEG:UNDH:3650:GapAct', 'USEG:UNDH:3750:GapAct', 'USEG:UNDH:3850:GapAct', 'USEG:UNDH:3950:GapAct',
+        'USEG:UNDH:4050:GapAct', 'USEG:UNDH:4150:GapAct', 'USEG:UNDH:4250:GapAct', 'USEG:UNDH:4350:GapAct',
+        'USEG:UNDH:4450:GapAct', 'USEG:UNDH:4550:GapAct', 'USEG:UNDH:4650:GapAct', 'USEG:UNDH:4750:GapAct'
     ]
     
     # Load quadrupoles from CSV
     try:
         quads = pd.read_csv('quad_mapping.csv')
         quads_list = quads['device_name'].tolist()
-        quads_list = [quad + ':BCTRL' for quad in quads_list]
+        quads_list = [quad + ':BACT' for quad in quads_list]
         logger.info(f"Loaded {len(quads_list)} quads from quad_mapping.csv")
     except FileNotFoundError:
         logger.warning("quad_mapping.csv not found, using only additional quads")
@@ -837,14 +924,13 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
     
     # Add additional quads
     quads_list.extend([
-        'SOLN:IN20:121:BCTRL', 'SOLN:IN20:311:BCTRL', 'QUAD:IN20:121:BCTRL',
-        'QUAD:IN20:122:BCTRL', 'QUAD:IN20:361:BCTRL', 'QUAD:IN20:371:BCTRL',
-        'QUAD:IN20:425:BCTRL', 'QUAD:IN20:441:BCTRL', 'QUAD:IN20:511:BCTRL',
-        'QUAD:IN20:525:BCTRL'
+        'SOLN:IN20:121:BACT', 'SOLN:IN20:311:BACT', 'QUAD:IN20:121:BACT',
+        'QUAD:IN20:122:BACT', 'QUAD:IN20:361:BACT', 'QUAD:IN20:371:BACT',
+        'QUAD:IN20:425:BACT', 'QUAD:IN20:441:BACT', 'QUAD:IN20:511:BACT',
+        'QUAD:IN20:525:BACT'
     ])
-    
     # Combine all desired input columns
-    desired_input_cols = (quads_list + RF_ampls + RF_phases + vcc_profile + 
+    desired_input_cols = (quads_list + RF_ampls + RF_phases + vcc_profile + blen + bcharge + 
                          undh_corr_x + undh_corr_y + undh_shifter + undh_gap)
     
     logger.info(f"Desired input features (from hardcoded lists): {len(desired_input_cols)}")
@@ -855,28 +941,9 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
     
     logger.info(f"Available in data: {len(available_cols)}")
     if missing_cols:
-        logger. warning(f"Missing from data: {len(missing_cols)} PVs")
-        logger.debug(f"First 10 missing PVs: {missing_cols[: 10]}")
+        logger.warning(f"Missing from data: {len(missing_cols)} PVs")
+        logger.warning(f"First 10 missing PVs: {missing_cols[: 10]}")
     
-    # # ---- Step 3:  Manually specified always-invalid PVs ----
-    # manually_invalid_pvs = [
-        
-    #     'QUAD:LI21:243:BCTRL', 'QUAD:LI24:713:BCTRL', 'QUAD:LI24:892:BCTRL',
-    #     'QUAD:CLTH:140:BCTRL', 'QUAD:CLTH:170:BCTRL', 'QUAD:BSYH:445:BCTRL',
-    #     'QUAD:LTUH:285:BCTRL', 'QUAD:LTUH:665:BCTRL', 'QUAD:DMPH:300:BCTRL',
-    #     'QUAD:DMPH:380:BCTRL', 'QUAD:DMPH:500:BCTRL', 'QUAD:BSYH:465:BCTRL',
-    #     'QUAD:BSYH:640:BCTRL', 'QUAD:BSYH:735:BCTRL', 'QUAD:BSYH:910:BCTRL',
-    #     'QUAD:LTUH:110:BCTRL', 'QUAD:LTUH:120:BCTRL', 'QUAD:LTUH:180:BCTRL',
-    #     'QUAD:LTUH:190:BCTRL', 'QUAD:LTUH:130:BCTRL', 'QUAD:LTUH:290:BCTRL',
-    #     'QUAD:LTUH:250:BCTRL', 'QUAD:LTUH:720:BCTRL', 'QUAD:LTUH:820:BCTRL',
-    #     'QUAD:UNDH:2780:BCTRL', 'QUAD:UNDH:2980:BCTRL', 'QUAD:UNDH:3080:BCTRL',
-    #     'QUAD:UNDH:4580:BCTRL', 'QUAD:UNDH:4680:BCTRL', 'QUAD:LI24:701:BCTRL',
-    #     'QUAD:LI24:601:BCTRL', 'QUAD:LI24:901:BCTRL', 'QUAD:LI25:201:BCTRL',
-    #     'QUAD:IN20:631:BCTRL', 'QUAD:IN20:651:BCTRL', 'QUAD:IN20:731:BCTRL',
-    #     'QUAD:LI21:315:BCTRL'
-    # ]
-    
-    # logger.info(f"Manually specified invalid PVs: {len(manually_invalid_pvs)}")
     
     # ---- Step 4: Auto-detect low-variability PVs using PERCENTILE METHOD ----
     logger.info("Detecting low-variability PVs using percentile range method...")
@@ -910,7 +977,7 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
     
     # ---- Step 6: Final input columns (available - invalid) ----
     input_cols = [c for c in available_cols if c not in low_variance_cols]
-    output_cols = ['hxr_pulse_intensity']
+    output_cols = ['GDET:FEE1:241:ENRC']
     
     logger.info("=" * 70)
     logger.info(f"FINAL FEATURE COUNT: {len(input_cols)}")
@@ -943,6 +1010,7 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
 # ============================================================================
 # NEURAL NETWORK MODEL
 # ============================================================================
+
 
 class FELNeuralNetwork(nn.Module):
     """
@@ -1032,7 +1100,7 @@ def save_checkpoint(
     scheduler: optim.lr_scheduler._LRScheduler,
     epoch: int,
     checkpoint_path: str,
-    input_cols: List[str] = None,  
+    input_cols: List[str] = None,  # ⭐ ADD THIS
 ):
     """Save training checkpoint with atomic writes."""
     checkpoint = {
@@ -1040,8 +1108,8 @@ def save_checkpoint(
         "model":   model.state_dict(),
         "optimizer": optimizer.state_dict(),
         "scheduler": scheduler.state_dict(),
-        "input_features": input_cols, 
-        "n_features": len(input_cols) if input_cols else None, 
+        "input_features": input_cols,  # ⭐ ADD THIS
+        "n_features": len(input_cols) if input_cols else None,  # ⭐ ADD THIS
     }
     
     # Atomic save with temp file
@@ -1082,7 +1150,7 @@ def train_model(
     start_epoch: int = 0,
     ckpt_dir: Optional[str] = None,
     save_every: int = 30,
-    input_cols: List[str] = None,  
+    input_cols: List[str] = None,  # ⭐ ADD THIS
 ) -> Tuple[List[float], List[float], Dict]: 
     """
     Train the FEL model.
@@ -1122,7 +1190,7 @@ def train_model(
     logger.info(f"Starting from epoch {start_epoch + 1}")
     
     for epoch in range(start_epoch, num_epochs):
-        epoch_start = time.time() 
+        epoch_start = time.time()  # ⭐ ADD
         model.train()
         train_loss = 0.0
         for inputs, targets in train_loader:
@@ -1164,14 +1232,14 @@ def train_model(
             eta_str = f"{remaining_time / 60:.1f} min"
         else:
             eta_str = f"{remaining_time:.0f} sec"
-        epoch_time = time.time() - epoch_start 
+        epoch_time = time.time() - epoch_start  # ⭐ ADD
         # Log message
         log_msg = (
             f"Epoch {epoch + 1:3d}/{num_epochs} | "
             f"LR: {current_lr:.2e} | "
             f"Train Loss: {train_loss:.6f} | "
             f"Test Loss: {test_loss:.6f} | "
-            f"Time: {epoch_time:.1f}s | "
+            f"Time: {epoch_time:.1f}s | "  # ⭐ ADD
             f"ETA: {eta_str}"
         )
         
@@ -1192,12 +1260,12 @@ def train_model(
             
             # Save last checkpoint
             last_ckpt_path = os.path.join(ckpt_dir, "last. pt")
-            save_checkpoint(model, optimizer, scheduler, epoch + 1, last_ckpt_path, input_cols) 
+            save_checkpoint(model, optimizer, scheduler, epoch + 1, last_ckpt_path, input_cols)  # ⭐ ADD input_cols
             
             # Save snapshots
             if (epoch + 1) % save_every == 0:
                 snap_path = os.path.join(ckpt_dir, f"epoch_{epoch + 1:03d}.pt")
-                save_checkpoint(model, optimizer, scheduler, epoch + 1, snap_path, input_cols)  
+                save_checkpoint(model, optimizer, scheduler, epoch + 1, snap_path, input_cols)  # ⭐ ADD input_cols
 
                 logger.info(f"  → Saved snapshot:  {snap_path}")
             
@@ -1222,49 +1290,117 @@ def train_model(
 def save_variable_config(
     input_cols: List[str],
     output_cols: List[str],
-    train_df_unscaled: pd.DataFrame,  
-    artifact_dir: str
+    train_df_unscaled: pd.DataFrame,
+    artifact_dir: str,
+    pretrained_config_path: Optional[str] = None  # ⭐ ADD THIS
 ):
     """
     Save input/output variable specifications for model deployment.
+    
+    When retraining (pretrained_config_path provided), copies the ORIGINAL config.
+    When training fresh, generates config from training data.
     
     Args:
         input_cols: List of input feature names
         output_cols: List of output feature names
         train_df_unscaled: UNSCALED training dataframe (original physical units)
         artifact_dir: Directory to save the configuration
+        pretrained_config_path: Path to original feature_config.yml (if retraining)
     """
     logger.info("Saving variable configuration...")
     
-    try:
-        from lume_model.utils import variables_as_yaml
-        from lume_model.variables import ScalarVariable
-        
-        input_variables = []
-        for col in input_cols:
-            # ✅ FIX: Use unscaled data to get physical ranges
-            lower_bound, default_value, upper_bound = train_df_unscaled[col].quantile([0, 0.5, 1])
-            input_variables.append(
-                ScalarVariable(
-                    name=col,
-                    default_value=float(default_value),
-                    value_range=[float(lower_bound), float(upper_bound)]
-                )
-            )
-        
-        output_variables = []
-        for col in output_cols: 
-            output_variables.append(ScalarVariable(name=col))
-        
-        config_path = os.path.join(artifact_dir, 'feature_config.yml')
-        variables_as_yaml(input_variables, output_variables, config_path)
-        logger.info(f"  ✓ Variable config:  {config_path}")
-        
-        return True
+    config_path = os.path.join(artifact_dir, 'feature_config.yml')
     
-    except ImportError:
-        logger.warning("lume_model not available; skipping variable config")
-        return False
+    # ⭐ CASE 1: RETRAINING - Copy original config exactly
+    if pretrained_config_path is not None:
+        if not os.path.exists(pretrained_config_path):
+            logger.error(f"❌ Pretrained config not found: {pretrained_config_path}")
+            logger.error("   Cannot save variable config")
+            return False
+        
+        try:
+            import shutil
+            shutil.copy2(pretrained_config_path, config_path)
+            logger.info(f"  ✓ Copied original feature_config.yml from pre-trained model")
+            logger.info(f"    Source: {pretrained_config_path}")
+            logger.info(f"    Dest:   {config_path}")
+            
+            # ⭐ OPTIONAL: Log a warning if new data ranges differ significantly
+            try:
+                orig_input_vars, _ = variables_from_yaml(pretrained_config_path)
+                
+                logger.info("\n  📊 Comparing original vs new data ranges:")
+                mismatches = []
+                
+                for var in orig_input_vars[:10]:  # Check first 10 for brevity
+                    col = var.name
+                    if col in train_df_unscaled.columns:
+                        orig_min, orig_max = var.value_range
+                        new_min = train_df_unscaled[col].min()
+                        new_max = train_df_unscaled[col].max()
+                        
+                        # Check if new data exceeds original range by >10%
+                        orig_range = orig_max - orig_min
+                        if orig_range > 1e-6:
+                            if new_min < orig_min * 0.9 or new_max > orig_max * 1.1:
+                                mismatches.append({
+                                    'col': col,
+                                    'orig_range': (orig_min, orig_max),
+                                    'new_range': (new_min, new_max)
+                                })
+                
+                if mismatches:
+                    logger.warning(f"\n  ⚠️  {len(mismatches)} features have new data outside original range:")
+                    for m in mismatches[:5]:
+                        logger.warning(
+                            f"     - {m['col']}: "
+                            f"orig [{m['orig_range'][0]:.4f}, {m['orig_range'][1]:.4f}] "
+                            f"→ new [{m['new_range'][0]:.4f}, {m['new_range'][1]:.4f}]"
+                        )
+                    if len(mismatches) > 5:
+                        logger.warning(f"     ... and {len(mismatches)-5} more")
+                    logger.warning("\n  ⚠️  Model may extrapolate outside training range!")
+                else:
+                    logger.info("     ✓ New data ranges are within original training ranges")
+                    
+            except Exception as e:
+                logger.debug(f"Could not compare ranges: {e}")
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to copy feature config: {e}")
+            return False
+    
+    # ⭐ CASE 2: FRESH TRAINING - Generate config from data
+    else:
+        try:
+            input_variables = []
+            for col in input_cols:
+                # Use unscaled data to get physical ranges
+                lower_bound, default_value, upper_bound = train_df_unscaled[col].quantile([0, 0.5, 1])
+                input_variables.append(
+                    ScalarVariable(
+                        name=col,
+                        default_value=float(default_value),
+                        value_range=[float(lower_bound), float(upper_bound)]
+                    )
+                )
+            
+            output_variables = []
+            for col in output_cols: 
+                output_variables.append(ScalarVariable(name=col))
+            
+            variables_as_yaml(input_variables, output_variables, config_path)
+            logger.info(f"  ✓ Generated new feature_config.yml from training data")
+            logger.info(f"    Path: {config_path}")
+            
+            return True
+        except Exception as e:
+            logger.error(f"❌ Failed to generate variable config: {e}")
+            return False
+
+
 
 
 def save_training_config(
@@ -1405,12 +1541,131 @@ def save_training_config(
     
     logger.info(f"  ✓ README: {readme_path}")
 
+def load_model_metadata(model_path: str) -> Dict:
+    """
+    Load and validate pre-trained model metadata.
+    
+    Returns:
+        dict with keys:
+            - input_features: List[str]
+            - architecture: List[int]
+            - scalers: dict with 'input' and 'output'
+            - config_path: str
+    """
+    logger.info("=" * 70)
+    logger.info("LOADING PRE-TRAINED MODEL METADATA")
+    logger.info("=" * 70)
+    
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model path not found: {model_path}")
+    
+    logger.info(f"Model directory: {model_path}")
+    
+    metadata = {}
+    
+    # 1. Load feature config
+    config_path = os.path.join(model_path, 'feature_config.yml')
+    if not os.path.exists(config_path):
+        raise FileNotFoundError(f"❌ No feature_config.yml found in {model_path}")
+    
+    try:
+        input_variables, output_variables = variables_from_yaml(config_path)
+        metadata['input_features'] = [v.name for v in input_variables]
+        metadata['output_features'] = [v.name for v in output_variables]
+        logger.info(f"✓ Loaded {len(metadata['input_features'])} input features")
+        logger.info(f"✓ Loaded {len(metadata['output_features'])} output features")
+    except Exception as e:
+        raise RuntimeError(f"❌ Failed to load feature config: {e}")
+    
+    # 2. Load scalers
+    input_scaler_path = os.path.join(model_path, 'input_scaler.pt')
+    output_scaler_path = os.path.join(model_path, 'output_scaler.pt')
+    
+    if not os.path.exists(input_scaler_path) or not os.path.exists(output_scaler_path):
+        raise FileNotFoundError(f"❌ Scalers not found in {model_path}")
+    
+    try:
+        metadata['scalers'] = {
+            'input': torch.load(input_scaler_path, weights_only=False),
+            'output': torch.load(output_scaler_path, weights_only=False)
+        }
+        logger.info(f"✓ Loaded input scaler ({metadata['scalers']['input'].coefficient.shape[0]} features)")
+        logger.info(f"✓ Loaded output scaler ({metadata['scalers']['output'].coefficient.shape[0]} features)")
+    except Exception as e:
+        raise RuntimeError(f"❌ Failed to load scalers: {e}")
+    
+    # 3. Detect model architecture
+    model_file = os.path.join(model_path, 'final_model.pt')
+    if not os.path.exists(model_file):
+        model_file = os.path.join(model_path, 'best_model.pt')
+    
+    if not os.path.exists(model_file):
+        raise FileNotFoundError(f"❌ No model file found in {model_path}")
+    
+    try:
+        pretrained_model = torch.load(model_file, map_location='cpu', weights_only=False)
+        
+        # Get state dict
+        if isinstance(pretrained_model, nn.Sequential):
+            state_dict = pretrained_model.state_dict()
+        elif isinstance(pretrained_model, dict):
+            state_dict = pretrained_model
+        else:
+            state_dict = pretrained_model.state_dict()
+        
+        # Infer hidden dimensions
+        hidden_dims = []
+        layer_idx = 0
+        while f'{layer_idx}.weight' in state_dict:
+            out_features = state_dict[f'{layer_idx}.weight'].shape[0]
+            hidden_dims.append(out_features)
+            
+            # Skip to next Linear layer (skip ELU and optional Dropout)
+            layer_idx += 2
+            if f'{layer_idx}.weight' not in state_dict and f'{layer_idx+1}.weight' in state_dict:
+                layer_idx += 1
+        
+        # Remove output layer
+        hidden_dims = hidden_dims[:-1]
+        
+        metadata['architecture'] = hidden_dims
+        metadata['model_state_dict'] = state_dict
+        logger.info(f"✓ Detected architecture: {hidden_dims}")
+        
+        # Verify dimensions
+        expected_input_size = state_dict['0.weight'].shape[1]
+        if expected_input_size != len(metadata['input_features']):
+            raise ValueError(
+                f"❌ Model/config mismatch!\n"
+                f"   Model expects: {expected_input_size} features\n"
+                f"   Config has: {len(metadata['input_features'])} features"
+            )
+        
+        logger.info(f"✓ Model dimensions validated")
+        
+    except Exception as e:
+        raise RuntimeError(f"❌ Failed to load model architecture: {e}")
+    
+    # 4. Load training config (optional, for reference)
+    training_config_path = os.path.join(model_path, 'training_config.json')
+    if os.path.exists(training_config_path):
+        try:
+            with open(training_config_path, 'r') as f:
+                metadata['training_config'] = json.load(f)
+            logger.info(f"✓ Loaded training config")
+        except Exception as e:
+            logger.warning(f"⚠️  Could not load training config: {e}")
+    
+    logger.info("=" * 70)
+    return metadata
+
+
 # ============================================================================
-# MAIN
+# UPDATED: Main function with fixed retraining logic
 # ============================================================================
 
 def main():
-    """Main function."""
+    """Main function with corrected retraining logic."""
     args = parse_arguments()
     
     logger.info("=" * 70)
@@ -1423,107 +1678,209 @@ def main():
     
     # Setup checkpoint directory
     ckpt_dir = setup_checkpoint_dir(args.checkpoint_dir)
-
-    input_cols_override = None
     
-    # Only apply feature override for model_path (fine-tuning/transfer learning)
-    if args.model_path and not args.resume_from:
+    # ============================================================================
+    # ⭐ STEP 1: Determine training mode and load metadata FIRST
+    # ============================================================================
+    
+    training_mode = None
+    model_metadata = None
+    input_cols_override = None
+    pretrained_scalers = None
+    pretrained_architecture = None
+    
+    if args.resume_from:
+        training_mode = "RESUME"
+        logger.info("🔄 RESUME MODE: Continuing from checkpoint")
+        logger.info(f"   Checkpoint: {args.resume_from}")
+        logger.info("   Will detect features from data (same as original run)")
+        
+    elif args.model_path:
+        training_mode = "RETRAIN"
+        logger.info("🔄 RETRAIN MODE: Fine-tuning pre-trained model")
+        logger.info(f"   Model path: {args.model_path}")
+        
+        # Load ALL model metadata BEFORE data processing
+        try:
+            model_metadata = load_model_metadata(args.model_path)
+            input_cols_override = model_metadata['input_features']
+            pretrained_scalers = model_metadata['scalers']
+            pretrained_architecture = model_metadata['architecture']
+            
+            logger.info("✓ Model metadata loaded successfully")
+            logger.info(f"   Features: {len(input_cols_override)}")
+            logger.info(f"   Architecture: {pretrained_architecture}")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to load model metadata: {e}")
+            logger.error("\n💡 Cannot proceed with retraining. Options:")
+            logger.error("   1. Check model path is correct")
+            logger.error("   2. Ensure all required files exist (model, scalers, config)")
+            logger.error("   3. Train from scratch (remove --model_path)")
+            exit(1)
+    
+    else:
+        training_mode = "FRESH"
+        logger.info("🆕 FRESH TRAINING: Starting from scratch")
+    
+    logger.info("=" * 70 + "\n")
+    
+    # ============================================================================
+    # ⭐ STEP 2: Load and preprocess data (with feature override if retraining)
+    # ============================================================================
+    
+    final_df, val_df, input_cols, output_cols = load_and_preprocess_data(
+        args, 
+        input_cols_override=input_cols_override  # None for fresh/resume, list for retrain
+    )
+    
+    # ============================================================================
+    # ⭐ STEP 3: Validate data compatibility (RETRAIN mode only)
+    # ============================================================================
+    
+    if training_mode == "RETRAIN":
         logger.info("=" * 70)
-        logger.info("🔄 FINE-TUNING MODE:   Loading from pre-trained model")
+        logger.info("VALIDATING DATA COMPATIBILITY")
         logger.info("=" * 70)
         
-        model_dir = os.path.dirname(args.model_path)
-        logger.info(f"Model path provided: {args.model_path}")
+        # Check 1: All required features present
+        missing_features = [f for f in input_cols_override if f not in final_df.columns]
+        if missing_features:
+            logger.error(f"❌ Missing {len(missing_features)} required features!")
+            for feat in missing_features[:10]:
+                logger.error(f"     - {feat}")
+            if len(missing_features) > 10:
+                logger.error(f"     ... and {len(missing_features)-10} more")
+            
+            logger.error("\n💡 SOLUTIONS:")
+            logger.error("   1. Use data from same time period as original training")
+            logger.error("   2. Check if PV names changed")
+            logger.error("   3. Train from scratch on new data")
+            exit(1)
         
-        # Try to find feature_config.yml
-        config_candidates = [
-            os.path. join(model_dir, 'feature_config.yml'),
-            os.path.join(model_dir, 'model_config.yml'),
-        ]
+        logger.info(f"✓ All {len(input_cols)} required features present")
         
-        config_path = None
-        for candidate in config_candidates:
-            if os.path.exists(candidate):
-                config_path = candidate
-                break
+        # Check 2: Warn about constant features (but don't drop them)
+        feature_ranges = final_df[input_cols].max() - final_df[input_cols].min()
+        constant_features = feature_ranges[feature_ranges == 0].index.tolist()
         
-        if config_path:
-            logger.info(f"✓ Found feature config:  {config_path}")
-            try:
-                from lume_model.utils import variables_from_yaml
-                input_variables, output_variables = variables_from_yaml(config_path)
-                input_cols_override = [v. name for v in input_variables]
-                logger.info(f"✓ Loaded {len(input_cols_override)} input features from config")
-            except Exception as e: 
-                logger.error(f"❌ Failed to load feature config: {e}")
-                logger.error("   Cannot proceed with fine-tuning - feature set unknown")
-                exit(1)
+        if constant_features:
+            logger.warning(f"⚠️  {len(constant_features)} features are constant in new data:")
+            for feat in constant_features[:10]:
+                logger.warning(f"     - {feat}")
+            if len(constant_features) > 10:
+                logger.warning(f"     ... and {len(constant_features)-10} more")
+            logger.warning("\n   ⚠️  These will be KEPT to match pre-trained model architecture")
+            logger.warning("   ⚠️  This may indicate data distribution shift!")
         else:
-            logger.error("❌ No feature_config.yml found for fine-tuning!")
-            logger.error("   Searched in:")
-            for candidate in config_candidates:
-                logger.error(f"     - {candidate}")
-            logger.error("\n💡 SOLUTION:  Provide the model directory containing feature_config.yml")
+            logger.info("✓ No constant features detected")
+        
+        # Check 3: Compare data ranges (warning only)
+        logger.info("\nComparing data ranges with original training data...")
+        original_mins = pretrained_scalers['input'].offset
+        original_maxs = original_mins + pretrained_scalers['input'].coefficient
+        
+        current_mins = final_df[input_cols].min().values
+        current_maxs = final_df[input_cols].max().values
+        
+        # Features with significant range changes (>50% change)
+        range_changes = []
+        for i, col in enumerate(input_cols):
+            orig_range = (original_maxs[i] - original_mins[i]).item()
+            curr_range = current_maxs[i] - current_mins[i]
+            
+            if orig_range > 1e-6:  # Skip constant features
+                range_ratio = abs(curr_range - orig_range) / orig_range
+                if range_ratio > 0.5:  # >50% change
+                    range_changes.append((col, range_ratio, orig_range, curr_range))
+        
+        if range_changes:
+            logger.warning(f"⚠️  {len(range_changes)} features have significant range changes:")
+            for col, ratio, orig, curr in sorted(range_changes, key=lambda x: x[1], reverse=True)[:10]:
+                logger.warning(f"     - {col}: {ratio*100:.0f}% change (orig: {orig:.4f}, new: {curr:.4f})")
+            if len(range_changes) > 10:
+                logger.warning(f"     ... and {len(range_changes)-10} more")
+            logger.warning("\n   ⚠️  Large range changes may hurt model performance")
+            logger.warning("   ⚠️  Consider retraining from scratch if performance degrades")
+        else:
+            logger.info("✓ Data ranges are similar to original training")
+        
+        logger.info("=" * 70)
+    
+    # ============================================================================
+    # ⭐ STEP 4: Train/test split
+    # ============================================================================
+    
+    logger.info("\nPerforming train/test split (80/20)...")
+    train_df, test_df = train_test_split(final_df, test_size=0.2, random_state=39)
+    
+    # Save unscaled copy (for variable config)
+    train_df_unscaled = train_df[input_cols + output_cols].copy()
+    
+    # ============================================================================
+    # ⭐ STEP 5: Handle scalers (use pretrained or create new)
+    # ============================================================================
+    
+    if training_mode == "RETRAIN":
+        # Use pretrained scalers
+        logger.info("=" * 70)
+        logger.info("USING PRE-TRAINED SCALERS")
+        logger.info("=" * 70)
+        
+        input_scaler = pretrained_scalers['input']
+        output_scaler = pretrained_scalers['output']
+        
+        logger.info(f"✓ Input scaler:  {input_scaler.coefficient.shape[0]} features")
+        logger.info(f"✓ Output scaler: {output_scaler.coefficient.shape[0]} features")
+        
+        # Verify dimensions
+        if input_scaler.coefficient.shape[0] != len(input_cols):
+            logger.error(f"❌ Scaler dimension mismatch!")
+            logger.error(f"   Expected: {len(input_cols)}")
+            logger.error(f"   Got: {input_scaler.coefficient.shape[0]}")
             exit(1)
         
         logger.info("=" * 70)
     
-    elif args.resume_from:
+    else:
+        # Create new scalers (FRESH or RESUME mode)
         logger.info("=" * 70)
-        logger.info("🔄 RESUME MODE:  Continuing from checkpoint")
+        logger.info("CREATING NEW SCALERS FROM TRAINING DATA")
         logger.info("=" * 70)
-        logger.info(f"Checkpoint: {args.resume_from}")
-        logger.info("Will use same feature detection as original run")
-        logger.info("=" * 70)
-        # No feature override - let data preprocessing run normally
-    
-  
-    final_df, val_df, input_cols, output_cols = load_and_preprocess_data(args, input_cols_override)
-    
-    # Train/test split
-    logger.info("\nPerforming train/test split (80/20)...")
-    train_df, test_df = train_test_split(final_df, test_size=0.2, random_state=39)
-    
-   
-    train_df_unscaled = train_df[input_cols + output_cols].copy()
-    
-    # Drop constant inputs detected in training set
-    logger.info("Removing constant inputs in training set...")
-    train_rng = train_df[input_cols].max() - train_df[input_cols].min()
-    const_inputs = train_rng[train_rng == 0].index.tolist()
-    
-    if const_inputs:
-        logger.info(f"Dropping {len(const_inputs)} constant PVs")
-        for c in const_inputs[: 10]: 
-            logger.debug(f"  {c}")
-        if len(const_inputs) > 10:
-            logger.debug(f"  ...and {len(const_inputs) - 10} more")
         
-        train_df = train_df.drop(columns=const_inputs)
-        test_df = test_df.drop(columns=const_inputs)
-        val_df = val_df.drop(columns=const_inputs, errors='ignore')
-        input_cols = [c for c in input_cols if c not in const_inputs]
+        input_mins = train_df[input_cols].min()
+        input_maxs = train_df[input_cols].max()
+        output_mins = train_df[output_cols].min()
+        output_maxs = train_df[output_cols].max()
+        
+        # Handle constant features
+        input_ranges = input_maxs - input_mins
+        constant_mask = input_ranges == 0
+        
+        if constant_mask.any():
+            n_constant = constant_mask.sum()
+            logger.warning(f"⚠️  {n_constant} features have zero range - setting range to 1.0")
+            input_ranges[constant_mask] = 1.0
+        
+        input_scaler = AffineInputTransform(
+            d=len(input_cols),
+            coefficient=torch.tensor(input_ranges.values, dtype=torch.float32),
+            offset=torch.tensor(input_mins.values, dtype=torch.float32),
+        )
+        output_scaler = AffineInputTransform(
+            d=len(output_cols),
+            coefficient=torch.tensor((output_maxs - output_mins).values, dtype=torch.float32),
+            offset=torch.tensor(output_mins.values, dtype=torch.float32),
+        )
+        
+        logger.info(f"✓ Created scalers")
+        logger.info("=" * 70)
     
-    # Fit scalers ONLY on training data (avoid leakage)
-    logger.info("Fitting scalers on training data only...")
-    input_mins = train_df[input_cols].min()
-    input_maxs = train_df[input_cols].max()
-    output_mins = train_df[output_cols].min()
-    output_maxs = train_df[output_cols].max()
+    # ============================================================================
+    # ⭐ STEP 6: Apply scaling
+    # ============================================================================
     
-    input_scaler = AffineInputTransform(
-        d=len(input_cols),
-        coefficient=torch.tensor((input_maxs - input_mins).values, dtype=torch.float32),
-        offset=torch.tensor(input_mins.values, dtype=torch.float32),
-    )
-    output_scaler = AffineInputTransform(
-        d=len(output_cols),
-        coefficient=torch.tensor((output_maxs - output_mins).values, dtype=torch.float32),
-        offset=torch.tensor(output_mins.values, dtype=torch.float32),
-    )
-    
-    # Apply scaling
-    logger.info("Applying scaling to all datasets...")
+    logger.info("\nApplying scaling to all datasets...")
     train_df.loc[:, input_cols] = input_scaler.transform(
         torch.tensor(train_df[input_cols].to_numpy(dtype=np.float32))
     ).numpy()
@@ -1533,7 +1890,7 @@ def main():
     train_df.loc[:, output_cols] = output_scaler.transform(
         torch.tensor(train_df[output_cols].to_numpy(dtype=np.float32))
     ).numpy()
-    test_df.loc[: , output_cols] = output_scaler.transform(
+    test_df.loc[:, output_cols] = output_scaler.transform(
         torch.tensor(test_df[output_cols].to_numpy(dtype=np.float32))
     ).numpy()
     
@@ -1545,82 +1902,95 @@ def main():
             torch.tensor(val_df[output_cols].to_numpy(dtype=np.float32))
         ).numpy()
     
-    # Create dataloaders
-    logger.info("Creating dataloaders...")
+    # Validate scaled data
+    logger.info("\nValidating scaled data...")
+    train_nan_count = train_df[input_cols].isna().sum().sum()
+    train_inf_count = np.isinf(train_df[input_cols].values).sum()
+    
+    if train_nan_count > 0 or train_inf_count > 0:
+        logger.error(f"❌ Invalid values in training data after scaling!")
+        logger.error(f"   NaN: {train_nan_count}, Inf: {train_inf_count}")
+        exit(1)
+    
+    logger.info("✓ Scaled data validated")
+    logger.info(f"  Range: [{train_df[input_cols].min().min():.4f}, {train_df[input_cols].max().max():.4f}]")
+    
+    # ============================================================================
+    # ⭐ STEP 7: Create model (use pretrained architecture if retraining)
+    # ============================================================================
+    
+    logger.info("\n" + "=" * 70)
+    logger.info("MODEL CREATION")
+    logger.info("=" * 70)
+    
+    if training_mode == "RETRAIN":
+        hidden_dims = pretrained_architecture
+        logger.info(f"Using pre-trained architecture: {hidden_dims}")
+    else:
+        hidden_dims = [1024, 512, 256, 128, 64, 32, 16]
+        logger.info(f"Fresh architecture: {hidden_dims}")
+    
+    model = FELNeuralNetwork(
+        input_size=len(input_cols),
+        output_size=len(output_cols),
+        hidden_dims=hidden_dims,
+        dropout=0.05,
+    ).to(device)
+    
+    total_params = sum(p.numel() for p in model.parameters())
+    logger.info(f"Total parameters: {total_params:,}")
+    logger.info(f"Model size: ~{total_params * 4 / (1024**2):.2f} MB")
+    
+    # Load pretrained weights if retraining
+    if training_mode == "RETRAIN":
+        logger.info("Loading pre-trained weights...")
+        try:
+            if isinstance(model_metadata['model_state_dict'], dict):
+                # Check if it's a state dict for Sequential (with 'net.' prefix)
+                if any(k.startswith('net.') for k in model_metadata['model_state_dict'].keys()):
+                    model.load_state_dict(model_metadata['model_state_dict'])
+                else:
+                    # It's a state dict for the Sequential module only
+                    model.net.load_state_dict(model_metadata['model_state_dict'])
+            logger.info("✓ Pre-trained weights loaded")
+        except Exception as e:
+            logger.error(f"❌ Failed to load weights: {e}")
+            logger.error("   Training from scratch instead")
+    
+    # ============================================================================
+    # ⭐ STEP 8: Create optimizer, scheduler, dataloaders
+    # ============================================================================
+    
     train_loader, test_loader = create_dataloaders(
         train_df, test_df, input_cols, output_cols, batch_size=args.batch_size
     )
     
-    # Create model
-    logger.info("\n" + "=" * 70)
-    logger.info("MODEL CREATION")
-    logger.info("=" * 70)
-    model = FELNeuralNetwork(
-        input_size=len(input_cols),
-        output_size=len(output_cols),
-        hidden_dims=[512, 512, 256, 128, 64, 16, 16],
-        dropout=0.05,
-    ).to(device)
-
-    logger.info(f"Model created: {len(input_cols)} inputs → {len(output_cols)} output") 
-
-    total_params = sum(p.numel() for p in model.parameters())
-    trainable_params = sum(p. numel() for p in model.parameters() if p.requires_grad)
-    logger.info(f"Total parameters: {total_params:,}")
-    logger.info(f"Trainable parameters: {trainable_params:,}")
-    logger.info(f"Model size: ~{total_params * 4 / (1024**2):.2f} MB (float32)")    
-    # Load pre-trained weights if provided
-    if args.model_path and os.path.exists(args.model_path):
-        logger.info(f"Loading pre-trained model:  {args.model_path}")
-        try:
-            # Load the Sequential model (not state_dict)
-            pretrained_model = torch.load(
-                args.model_path, 
-                map_location=device,
-                weights_only=False  # ← Explicitly allow non-weights objects
-            )
-            
-            # If it's a Sequential, copy into our model's . net
-            if isinstance(pretrained_model, nn. Sequential):
-                model.net.load_state_dict(pretrained_model.state_dict())
-                logger.info("✓ Pre-trained Sequential model loaded")
-            # If it's a state dict, load directly
-            elif isinstance(pretrained_model, dict):
-                model.load_state_dict(pretrained_model)
-                logger.info("✓ Pre-trained state dict loaded")
-            else:
-                logger. warning(f"Unexpected model type: {type(pretrained_model)}")
-                logger.warning("Training from scratch.")
-        except Exception as e: 
-            logger.warning(f"Failed to load model:  {e}.  Training from scratch.")
-    
-    # Create optimizer and scheduler
-    lr = 1e-5 #5e-6 #1e-5
-    weight_decay = 1e-4 #1e-6
+    lr = 3e-6 # default: 1e-5
+    weight_decay = 1e-4
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', factor=0.8, patience=4)
+    
+    logger.info("\n" + "=" * 70)
+    logger.info("HYPERPARAMETERS")
+    logger.info("=" * 70)
+    logger.info(f"Training mode:     {training_mode}")
+    logger.info(f"Learning rate:     {lr}")
+    logger.info(f"Weight decay:      {weight_decay}")
+    logger.info(f"Batch size:        {args.batch_size}")
+    logger.info(f"Epochs:            {args.epochs}")
+    logger.info("=" * 70)
     
     # Load checkpoint if resuming
     start_epoch = 0
     if args.resume_from and os.path.exists(args.resume_from):
         logger.info(f"Resuming from checkpoint: {args.resume_from}")
         start_epoch = load_checkpoint(args.resume_from, model, optimizer, scheduler, device)
-    # In main(), before training: 
     
-    logger.info("\n" + "=" * 70)
-    logger.info("HYPERPARAMETERS")
-    logger.info("=" * 70)
-    logger.info(f"Learning rate:      {lr}")
-    logger.info(f"Weight decay:      {weight_decay}")
-    logger.info(f"Batch size:         {args.batch_size}")
-    logger.info(f"Loss function:     {criterion.__class__.__name__}")
-    logger.info(f"Optimizer:         {optimizer.__class__.__name__}")
-    logger.info(f"LR scheduler:      {scheduler.__class__.__name__}")
-    logger.info(f"Scheduler patience: 4")
-    logger.info(f"Scheduler factor:  0.8")
-    logger.info("=" * 70)
-    # Train
+    # ============================================================================
+    # ⭐ STEP 9: Train
+    # ============================================================================
+    
     train_losses, test_losses, best_model_state = train_model(
         model, train_loader, test_loader,
         criterion, optimizer, scheduler,
@@ -1629,54 +1999,72 @@ def main():
         start_epoch=start_epoch,
         ckpt_dir=ckpt_dir,
         save_every=args.save_every,
-        input_cols=input_cols,  
+        input_cols=input_cols,
     )
     
-    # Save artifacts
+    # ============================================================================
+    # ⭐ STEP 10: Save artifacts
+    # ============================================================================
+    
     logger.info("\n" + "=" * 70)
     logger.info("SAVING ARTIFACTS")
     logger.info("=" * 70)
     
     model_dir = '/sdf/data/ad/ard/u/zihanzhu/ml/lcls_fel_tuning/model/'
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    artifact_dir = os.path.join(model_dir, f"{timestamp}_nn")
+    
+    # Add training mode to directory name
+    mode_suffix = {
+        "FRESH": "fresh",
+        "RETRAIN": "retrain",
+        "RESUME": "resume"
+    }.get(training_mode, "unknown")
+    
+    artifact_dir = os.path.join(model_dir, f"{timestamp}_nn_{mode_suffix}")
     os.makedirs(artifact_dir, exist_ok=True)
     
-    best_model_path = os.path.join(artifact_dir, 'best_model.pt')
-    final_model_path = os.path.join(artifact_dir, 'final_model.pt')
-    input_scaler_path = os.path.join(artifact_dir, 'input_scaler.pt')
-    output_scaler_path = os.path.join(artifact_dir, 'output_scaler.pt')
-    train_losses_path = os.path.join(artifact_dir, 'train_losses.npy')
-    test_losses_path = os.path.join(artifact_dir, 'test_losses.npy')
-    
-    torch.save(best_model_state, best_model_path)
-    torch.save(model.net, final_model_path)
-    torch.save(input_scaler, input_scaler_path)
-    torch.save(output_scaler, output_scaler_path)
-    np.save(train_losses_path, np.array(train_losses))
-    np.save(test_losses_path, np.array(test_losses))
+    # Save all artifacts
+    torch.save(best_model_state, os.path.join(artifact_dir, 'best_model.pt'))
+    torch.save(model.net, os.path.join(artifact_dir, 'final_model.pt'))
+    torch.save(input_scaler, os.path.join(artifact_dir, 'input_scaler.pt'))
+    torch.save(output_scaler, os.path.join(artifact_dir, 'output_scaler.pt'))
+    np.save(os.path.join(artifact_dir, 'train_losses.npy'), np.array(train_losses))
+    np.save(os.path.join(artifact_dir, 'test_losses.npy'), np.array(test_losses))
     
     logger.info(f"\nArtifacts saved to: {artifact_dir}")
-    logger.info(f"  ✓ Best model: {best_model_path}")
-    logger.info(f"  ✓ Final model: {final_model_path}")
-    logger.info(f"  ✓ Input scaler: {input_scaler_path}")
-    logger.info(f"  ✓ Output scaler: {output_scaler_path}")
-    logger.info(f"  ✓ Train losses: {train_losses_path}")
-    logger.info(f"  ✓ Test losses: {test_losses_path}")
     
-    save_variable_config(input_cols, output_cols, train_df_unscaled, artifact_dir)
+    # ⭐ Save variable config (use original if retraining)
+    pretrained_config_path = None
+    if training_mode == "RETRAIN" and model_metadata is not None:
+        pretrained_config_path = os.path.join(args.model_path, 'feature_config.yml')
     
+    save_variable_config(
+        input_cols, 
+        output_cols, 
+        train_df_unscaled, 
+        artifact_dir,
+        pretrained_config_path=pretrained_config_path  # ⭐ ADD THIS
+    )
+    
+    # Save training config
     additional_info = {
+        'training_mode': training_mode,
         'best_test_loss': float(min(test_losses)),
         'final_test_loss': float(test_losses[-1]),
         'n_test_samples': len(test_df),
         'n_validation_samples': len(val_df),
     }
+    
+    if training_mode == "RETRAIN":
+        additional_info['pretrained_model_path'] = args.model_path
+        additional_info['original_feature_config'] = pretrained_config_path
+    
     save_training_config(args, input_cols, output_cols, train_df, artifact_dir, additional_info)
     
     logger.info("\n" + "=" * 70)
     logger.info("✓ TRAINING COMPLETE!")
     logger.info("=" * 70)
+
 
 if __name__ == "__main__":
     main()
