@@ -3,9 +3,9 @@
 #SBATCH -G 1                # Number of GPUs
 #SBATCH --job-name=fel_model_gpu
 #SBATCH --partition=ampere           # GPU partition
-#SBATCH --account=ad:ard-online@ampere  # SLAC account ad:ard-online@ampere
+#SBATCH --account=ad:default@ampere  # SLAC account ad:ard-online@ampere
 #SBATCH --cpus-per-task=8             # CPU cores for data loading (num_workers)
-#SBATCH --mem=256G                    # Memory per node
+#SBATCH --mem=128G                    # Memory per node
 #SBATCH -t 72:00:00                 # Time limit
 #SBATCH --output=./slurm_outputs/output_%j.out
 #SBATCH --error=./slurm_outputs/output_%j.log
@@ -56,9 +56,10 @@ source /sdf/data/ad/ard/u/zihanzhu/miniconda3/bin/activate ml_gpu
 python train_fel_model.py \
     --epochs 100 \
     --batch_size 512 \
-    --subsample_step 1 \
-    --model_path /sdf/data/ad/ard/u/zihanzhu/ml/lcls_fel_tuning/model/2026-03-09_20-45-09_nn_retrain/ \
-    # --resume_from /sdf/scratch/users/z/zihanzhu/fel_tuning/checkpoints/22654774/epoch_180.pt \
+    --subsample_step 10 \
+    --lr 1e-6 \
+    # --model_path /sdf/data/ad/ard/u/zihanzhu/ml/lcls_fel_tuning/model/2026-03-11_03-40-06_nn_retrain/ \
+    # --resume_from /sdf/scratch/users/z/zihanzhu/fel_tuning/checkpoints/24219121/epoch_030.pt \
 
 
 

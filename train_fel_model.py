@@ -62,6 +62,10 @@ def parse_arguments():
                         help="Number of training epochs")
     parser.add_argument("--batch_size", type=int, default=512,
                         help="Batch size for training")
+    parser.add_argument("--lr", type=float, default=1e-5,
+                        help="Learning rate.")
+    parser.add_argument("--weight_decay", type=float, default= 1e-4,
+                        help="Weight decay.")
     parser.add_argument("--model_path", type=str, default=None,
                         help="Path to pre-trained model to load")
     parser.add_argument("--subsample_step", type=int, default=1,
@@ -72,7 +76,7 @@ def parse_arguments():
                         help="Path to checkpoint to resume from")
     parser.add_argument("--save_every", type=int, default=30,
                         help="Save checkpoint every N epochs")
-        # ⭐ PARSE FIRST
+    # ⭐ PARSE FIRST
     args = parser.parse_args()
     
     # ⭐ ADD VALIDATION
@@ -89,7 +93,6 @@ def parse_arguments():
         parser.error("--subsample_step must be >= 1")
     
     return args
-    return parser.parse_args()
 
 # ============================================================================
 # CHECKPOINT & DIRECTORY SETUP
@@ -150,8 +153,8 @@ def dataset_filter(dataset: pd.DataFrame, log_top_n: int = 5, logger=None) -> pd
         'Charge at gun 240-275': (dataset['SIOC:SYS0:ML00:CALC038'] > 240) & (dataset['SIOC:SYS0:ML00:CALC038'] < 275),
         'Charge after BC1 < 200': dataset['SIOC:SYS0:ML00:CALC252'] < 200,
         'HXR e-energy > 8': dataset['BEND:DMPH:400:BACT'] > 8,
-        'HXR photon > 7000': dataset['SIOC:SYS0:ML00:AO627'] > 7000,
-        # 'HXR photon 9.5keV-10keV': (dataset['SIOC:SYS0:ML00:AO627'] > 9500) & (dataset['SIOC:SYS0:ML00:AO627']<10000),
+        # 'HXR photon > 7000': dataset['SIOC:SYS0:ML00:AO627'] > 7000,
+        'HXR photon 9.5keV-10keV': (dataset['SIOC:SYS0:ML00:AO627'] > 9500) & (dataset['SIOC:SYS0:ML00:AO627']<10000),
     }
     
     # Apply each filter and track impact
@@ -575,17 +578,17 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
     file_dir = '/sdf/data/ad/ard/u/zihanzhu/ml/lcls_fel_tuning/dataset_updated/'
     pickle_files = [
         # '20260218_MD_1st.pkl',
-        'hxr_archiver_2026-02.pkl', 'hxr_archiver_2026-03.pkl',
+        'hxr_archiver_2026-02.pkl', #'hxr_archiver_2026-03.pkl',
         'hxr_archiver_2026-01.pkl', 'hxr_archiver_2025-12.pkl',
-        'hxr_archiver_2025-11.pkl', 'hxr_archiver_2025-10.pkl', 'hxr_archiver_2025-09.pkl',
-        'hxr_archiver_2025-06.pkl', 'hxr_archiver_2025-05.pkl', 'hxr_archiver_2025-04.pkl',
-        'hxr_archiver_2025-03.pkl', 'hxr_archiver_2025-02.pkl', 'hxr_archiver_2025-01.pkl',
-        # 'hxr_archiver_2024-12.pkl', 'hxr_archiver_2024-11.pkl', 'hxr_archiver_2024-10.pkl',
-        # 'hxr_archiver_2024-09.pkl', 'hxr_archiver_2024-08.pkl', 'hxr_archiver_2024-07.pkl',
-        # 'hxr_archiver_2024-06.pkl', 'hxr_archiver_2024-05.pkl', 'hxr_archiver_2024-04.pkl',
-        # 'hxr_archiver_2024-03.pkl', 'hxr_archiver_2024-02.pkl', 'hxr_archiver_2024-01.pkl',
-        # 'hxr_archiver_2023-11.pkl', 'hxr_archiver_2023-10.pkl', 'hxr_archiver_2023-09.pkl',
-        # 'hxr_archiver_2023-08.pkl', 'hxr_archiver_2023-07.pkl',
+        'hxr_archiver_2025-11.pkl', 'hxr_archiver_2025-10.pkl', #'hxr_archiver_2025-09.pkl',
+        'hxr_archiver_2025-06.pkl', 'hxr_archiver_2025-05.pkl', #'hxr_archiver_2025-04.pkl',
+        'hxr_archiver_2025-03.pkl', 'hxr_archiver_2025-02.pkl', #'hxr_archiver_2025-01.pkl',
+        'hxr_archiver_2024-12.pkl', 'hxr_archiver_2024-11.pkl', 'hxr_archiver_2024-10.pkl',
+        'hxr_archiver_2024-09.pkl', 'hxr_archiver_2024-08.pkl', 'hxr_archiver_2024-07.pkl',
+        'hxr_archiver_2024-06.pkl', 'hxr_archiver_2024-05.pkl', 'hxr_archiver_2024-04.pkl',
+        'hxr_archiver_2024-03.pkl', 'hxr_archiver_2024-02.pkl', 'hxr_archiver_2024-01.pkl',
+        'hxr_archiver_2023-11.pkl', 'hxr_archiver_2023-10.pkl', 'hxr_archiver_2023-09.pkl',
+        'hxr_archiver_2023-08.pkl', 'hxr_archiver_2023-07.pkl',
     ]
     
     logger.info(f"Loading {len(pickle_files)} pickle files")
@@ -642,40 +645,74 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
     final_df. index = final_df.index. tz_convert("US/Pacific")
     
     # ---- Apply Exclusion Windows (Maintenance, etc.) ----
-    logger.info("Applying exclusion windows (MDs, maintenance, downtime)...")
+    logger.info("Applying exclusion windows (MDs, Seeded mode, 2-bunch mode)...")
     exclusion_windows = [
+        ("2026-03-08 18:00", "2026-03-13 18:00"),
+        ("2026-03-02 06:00", "2026-03-03 23:00"),
+        ("2026-03-01 06:00", "2026-03-01 18:00"),
+        ("2026-02-24 06:00", "2026-02-25 21:00"),
+        ("2026-02-09 06:00", "2026-02-13 00:00"),
+        ("2026-01-24 00:00", "2026-01-24 18:00"),
         ("2025-11-27 10:00", "2025-11-28 18:00"),
         ("2025-11-20 07:00", "2025-11-21 06:00"),
+        ("2025-11-05 00:00", "2025-11-05 09:00"),
+        ("2025-10-29 10:00", "2025-10-29 19:00"),
         ("2025-10-22 12:00", "2025-10-24 06:00"),
-        ("2025-10-01 06:00", "2025-10-02 06:00"),
-        ("2025-09-16 06:00", "2025-09-17 06:00"),
+        ("2025-10-19 06:00", "2025-10-20 06:00"),
+        ("2025-10-01 06:00", "2025-10-15 02:00"),
+        ("2025-09-14 06:00", "2025-09-22 06:00"),
         ("2025-09-09 06:00", "2025-09-11 06:00"),
         ("2025-06-25 17:00", "2025-06-26 04:00"),
-        ("2025-05-28 23:00", "2025-05-29 06:00"),
-        ("2025-05-21 20:00", "2025-05-22 06:00"),
-        ("2025-05-15 13:00", "2025-05-15 22:00"),
+        ("2025-05-25 06:00", "2025-06-01 06:00"),
+        ("2025-05-15 13:00", "2025-05-22 18:00"),
         ("2025-05-06 12:00", "2025-05-07 02:00"),
-        ("2025-04-17 11:00", "2025-04-17 23:00"),
-        ("2025-04-02 07:00", "2025-04-02 18:00"),
-        ("2025-03-26 15:00", "2025-03-27 02:00"),
+        ("2025-04-30 08:00", "2025-05-01 18:00"),
+        ("2025-04-16 09:00", "2025-04-17 23:00"),
+        ("2025-04-08 07:00", "2025-04-09 02:00"),
+        ("2025-03-31 18:00", "2025-04-03 02:00"),
+        ("2025-03-18 06:00", "2025-03-27 04:00"),
+        ("2025-03-07 18:00", "2025-03-13 02:00"),
+        ("2025-02-28 06:00", "2025-03-01 06:00"),
+        ("2025-02-26 06:00", "2025-02-27 06:00"),
+        ("2025-02-24 18:00", "2025-02-25 06:00"),
+        ("2025-02-22 18:00", "2025-02-23 06:00"),
+        ("2025-02-18 06:00", "2025-02-22 02:00"),
+        ("2025-02-12 09:00", "2025-02-12 17:00"),
         ("2025-02-05 07:00", "2025-02-05 17:00"),
-        # ("2024-11-21 08:30", "2024-11-21 18:00"),
-        # ("2024-11-12 16:00", "2024-11-13 02:00"),
-        # ("2024-11-06 07:30", "2024-11-06 15:30"),
-        # ("2024-10-15 07:00", "2024-10-16 08:00"),
-        # ("2024-09-04 21:00", "2024-09-05 15:30"),
-        # ("2024-06-06 20:30", "2024-06-07 04:30"),
-        # ("2024-05-09 15:00", "2024-05-09 22:00"),
-        # ("2024-03-28 10:00", "2024-03-29 02:00"),
-        # ("2024-03-20 17:00", "2024-03-21 01:30"),
-        # ("2024-02-14 19:00", "2024-02-15 03:00"),
-        # ("2023-11-16 08:00", "2023-11-16 17:00"),
-        # ("2023-11-09 16:00", "2023-11-10 04:00"),
-        # ("2023-11-01 13:00", "2023-11-01 22:00"),
-        # ("2023-10-05 09:00", "2023-10-06 05:00"),
-        # ("2023-09-27 21:00", "2023-09-28 03:00"),
-        # ("2023-09-21 09:00", "2023-09-21 19:00"),
-        # ("2023-08-30 06:00", "2023-08-30 18:00"),
+        ("2024-11-21 08:30", "2024-11-21 18:00"),
+        ("2024-11-12 16:00", "2024-11-13 02:00"),
+        ("2024-11-04 19:00", "2024-11-06 15:30"),
+        ("2024-10-28 06:00", "2024-10-30 14:00"),
+        ("2024-10-27 06:00", "2024-10-27 18:00"),
+        ("2024-10-21 06:00", "2024-10-25 05:00"),
+        ("2024-10-15 07:00", "2024-10-16 05:00"),
+        ("2024-09-14 18:00", "2024-09-17 17:00"),
+        ("2024-09-04 21:00", "2024-09-05 15:30"),
+        ("2024-06-06 20:30", "2024-06-07 04:30"),
+        ("2024-05-29 18:00", "2024-05-30 06:00"),
+        ("2024-05-28 18:00", "2024-05-29 06:00"),
+        ("2024-05-28 00:00", "2024-05-28 05:00"),
+        ("2024-05-18 06:00", "2024-05-24 12:00"),
+        ("2024-05-08 15:00", "2024-05-15 06:00"),
+        ("2024-04-02 18:00", "2024-04-03 06:00"),
+        ("2024-04-01 18:00", "2024-04-02 06:00"),
+        ("2024-03-31 18:00", "2024-04-01 06:00"),
+        ("2024-03-30 18:00", "2024-03-31 06:00"),
+        ("2024-03-29 18:00", "2024-03-30 06:00"),
+        ("2024-03-28 10:00", "2024-03-29 02:00"),
+        ("2024-03-20 17:00", "2024-03-21 01:30"),
+        ("2024-03-12 06:00", "2024-03-14 06:00"),
+        ("2024-03-10 18:00", "2024-03-11 06:00"),
+        ("2024-03-05 08:00", "2024-03-09 18:00"),
+        ("2024-02-21 06:00", "2024-02-22 06:00"),
+        ("2024-02-14 19:00", "2024-02-15 03:00"),
+        ("2023-11-16 08:00", "2023-11-16 17:00"),
+        ("2023-11-09 16:00", "2023-11-10 04:00"),
+        ("2023-11-01 13:00", "2023-11-01 22:00"),
+        ("2023-10-05 09:00", "2023-10-06 05:00"),
+        ("2023-09-27 21:00", "2023-09-28 03:00"),
+        ("2023-09-21 09:00", "2023-09-21 19:00"),
+        ("2023-08-30 06:00", "2023-08-30 18:00"),
     ]
     
     exclusion_mask = pd.Series(False, index=final_df.index)
@@ -697,42 +734,33 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
     # ---- Apply Validation Windows (Time-based split) ----
     logger.info("Applying validation windows...")
     validation_windows = [
-        ("2026-02-28 00:00", "2026-03-03 00:00"),
-        ("2026-01-28 00:00", "2026-02-03 00:00"),
-        ("2025-11-28 00:00", "2025-12-03 00:00"),
-        ("2025-10-28 00:00", "2025-11-03 00:00"),
-        ("2025-09-28 00:00", "2025-10-03 00:00"),
-        ("2025-08-28 00:00", "2025-09-03 00:00"),
-        ("2025-06-28 00:00", "2025-07-03 00:00"),
-        ("2025-05-28 00:00", "2025-06-03 00:00"),
-        ("2025-04-28 00:00", "2025-05-03 00:00"),
-        ("2025-03-28 00:00", "2025-04-03 00:00"),
-        ("2025-02-28 00:00", "2025-03-03 00:00"),
-        # ("2024-11-28 00:00", "2024-12-03 00:00"),
-        # ("2024-10-28 00:00", "2024-11-03 00:00"),
-        # ("2024-09-28 00:00", "2024-10-03 00:00"),
-        # ("2024-08-28 00:00", "2024-09-03 00:00"),
-        # ("2024-06-28 00:00", "2024-07-03 00:00"),
-        # ("2024-05-28 00:00", "2024-06-03 00:00"),
-        # ("2024-04-28 00:00", "2024-05-03 00:00"),
-        # ("2024-03-28 00:00", "2024-04-03 00:00"),
-        # ("2024-02-28 00:00", "2024-03-03 00:00"),
-        # ("2023-10-28 00:00", "2023-11-03 00:00"),
-        # ("2023-09-28 00:00", "2023-10-03 00:00"),
-        # ("2023-08-28 00:00", "2023-09-03 00:00"),
-        # ("2023-07-28 00:00", "2023-08-03 00:00"),
+        ("2026-02-20 00:00", "2026-02-25 00:00"),
+        ("2026-01-20 00:00", "2026-01-25 00:00"),
+        ("2025-11-20 00:00", "2025-11-25 00:00"),
+        ("2025-10-20 00:00", "2025-10-25 00:00"),
+        ("2025-09-20 00:00", "2025-09-25 00:00"),
+        ("2025-08-20 00:00", "2025-08-25 00:00"),
+        ("2025-06-20 00:00", "2025-06-25 00:00"),
+        ("2025-05-20 00:00", "2025-05-25 00:00"),
+        ("2025-04-20 00:00", "2025-04-25 00:00"),
+        ("2025-03-20 00:00", "2025-03-25 00:00"),
+        ("2025-02-20 00:00", "2025-02-25 00:00"),
+        ("2024-11-20 00:00", "2024-11-25 00:00"),
+        ("2024-10-20 00:00", "2024-10-25 00:00"),
+        ("2024-09-20 00:00", "2024-09-25 00:00"),
+        ("2024-08-20 00:00", "2024-08-25 00:00"),
+        ("2024-06-20 00:00", "2024-06-25 00:00"),
+        ("2024-05-20 00:00", "2024-05-25 00:00"),
+        ("2024-04-20 00:00", "2024-04-25 00:00"),
+        ("2024-03-20 00:00", "2024-03-25 00:00"),
+        ("2024-02-20 00:00", "2024-02-25 00:00"),
+        ("2023-10-20 00:00", "2023-10-25 00:00"),
+        ("2023-09-20 00:00", "2023-09-25 00:00"),
+        ("2023-08-20 00:00", "2023-08-25 00:00"),
+        ("2023-07-20 00:00", "2023-07-25 00:00"),
     ]
     
-    val_mask = pd.Series(False, index=final_df.index)
-    for t0, t1 in validation_windows:
-        start = pd.Timestamp(t0, tz="US/Pacific")
-        end = pd.Timestamp(t1, tz="US/Pacific")
-        val_mask |= (final_df.index >= start) & (final_df.index <= end)
-    
-    val_df = final_df[val_mask]. copy()
-    final_df = final_df[~val_mask]. copy()
-    logger.info(f"Validation samples:{len(val_df)}")
-    logger.info(f"Training/test samples:{len(final_df)}")
+
     # ============================================================================
     # ⭐ OUTLIER FILTERING (Apply for BOTH FRESH and RETRAIN!)
     # ============================================================================
@@ -762,6 +790,17 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
         upper_pct=100,
         min_samples=100
     )
+
+    val_mask = pd.Series(False, index=final_df.index)
+    for t0, t1 in validation_windows:
+        start = pd.Timestamp(t0, tz="US/Pacific")
+        end = pd.Timestamp(t1, tz="US/Pacific")
+        val_mask |= (final_df.index >= start) & (final_df.index <= end)
+    
+    val_df = final_df[val_mask]. copy()
+    final_df = final_df[~val_mask]. copy()
+    logger.info(f"Validation samples:{len(val_df)}")
+    logger.info(f"Training samples:{len(final_df)}")
     
     filtered_count = len(final_df)
     logger.info(f"\n✓ Outlier filtering complete:")
@@ -788,7 +827,6 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
         logger.info("\n" + "=" * 70)
         logger.info("OUTLIER FILTERING")
         logger.info("=" * 70)
-        logger.info("Mode: RETRAIN - Skipping outlier filtering")
         logger.info("  (Using same data distribution as original training)")
         logger.info("=" * 70)
     # ============================================================================
@@ -930,7 +968,7 @@ def load_and_preprocess_data(args, input_cols_override=None) -> Tuple[pd.DataFra
         'QUAD:IN20:525:BACT'
     ])
     # Combine all desired input columns
-    desired_input_cols = (quads_list + RF_ampls + RF_phases + vcc_profile + blen + bcharge + 
+    desired_input_cols = (quads_list + RF_ampls + RF_phases + vcc_profile + blen + bcharge + hxr_energy + 
                          undh_corr_x + undh_corr_y + undh_shifter + undh_gap)
     
     logger.info(f"Desired input features (from hardcoded lists): {len(desired_input_cols)}")
@@ -1030,7 +1068,8 @@ class FELNeuralNetwork(nn.Module):
         super().__init__()
         
         if hidden_dims is None:
-            hidden_dims = [512, 512, 256, 128, 64, 16, 16]
+            # hidden_dims = [1024, 512, 256, 128, 64, 16, 16]
+            hidden_dims = [512, 256, 128, 64, 16, 16]
         
         layers = []
         prev_dim = input_size
@@ -1259,7 +1298,7 @@ def train_model(
             os.makedirs(ckpt_dir, exist_ok=True)
             
             # Save last checkpoint
-            last_ckpt_path = os.path.join(ckpt_dir, "last. pt")
+            last_ckpt_path = os.path.join(ckpt_dir, "last.pt")
             save_checkpoint(model, optimizer, scheduler, epoch + 1, last_ckpt_path, input_cols)  # ⭐ ADD input_cols
             
             # Save snapshots
@@ -1659,7 +1698,20 @@ def load_model_metadata(model_path: str) -> Dict:
     logger.info("=" * 70)
     return metadata
 
-
+def compute_scaler_bounds(df, input_cols, lower_pct=1, upper_pct=99):
+    """
+    Compute per-column [P_low, P_high] bounds for min-max scaling.
+    Does NOT remove any rows — purely for scaler construction.
+    """
+    bounds = {}
+    for col in input_cols:
+        data = df[col].replace([np.inf, -np.inf], np.nan).dropna()
+        bounds[col] = {
+            'lower': float(data.quantile(lower_pct / 100)),
+            'upper': float(data.quantile(upper_pct / 100)),
+        }
+    return bounds
+    
 # ============================================================================
 # UPDATED: Main function with fixed retraining logic
 # ============================================================================
@@ -1811,8 +1863,10 @@ def main():
     # ⭐ STEP 4: Train/test split
     # ============================================================================
     
-    logger.info("\nPerforming train/test split (80/20)...")
-    train_df, test_df = train_test_split(final_df, test_size=0.2, random_state=39)
+    # logger.info("\nPerforming train/test split (80/20)...")
+    # train_df, test_df = train_test_split(final_df, test_size=0.2, random_state=39)
+    train_df = final_df                  # all remaining data is training
+    # test_df  = val_df                    # temporally held-out windows = test
     
     # Save unscaled copy (for variable config)
     train_df_unscaled = train_df[input_cols + output_cols].copy()
@@ -1847,26 +1901,25 @@ def main():
         logger.info("=" * 70)
         logger.info("CREATING NEW SCALERS FROM TRAINING DATA")
         logger.info("=" * 70)
+
+
+        # In main():
+        scaler_bounds = compute_scaler_bounds(train_df, input_cols, lower_pct=1, upper_pct=99)
         
-        input_mins = train_df[input_cols].min()
-        input_maxs = train_df[input_cols].max()
-        output_mins = train_df[output_cols].min()
-        output_maxs = train_df[output_cols].max()
-        
-        # Handle constant features
+        input_mins   = torch.tensor([scaler_bounds[c]['lower'] for c in input_cols], dtype=torch.float32)
+        input_maxs   = torch.tensor([scaler_bounds[c]['upper'] for c in input_cols], dtype=torch.float32)
         input_ranges = input_maxs - input_mins
-        constant_mask = input_ranges == 0
-        
-        if constant_mask.any():
-            n_constant = constant_mask.sum()
-            logger.warning(f"⚠️  {n_constant} features have zero range - setting range to 1.0")
-            input_ranges[constant_mask] = 1.0
+        input_ranges[input_ranges == 0] = 1.0  # guard against constant features
         
         input_scaler = AffineInputTransform(
             d=len(input_cols),
-            coefficient=torch.tensor(input_ranges.values, dtype=torch.float32),
-            offset=torch.tensor(input_mins.values, dtype=torch.float32),
+            coefficient=input_ranges,
+            offset=input_mins,
         )
+
+        output_mins = train_df[output_cols].min()
+        output_maxs = train_df[output_cols].max()
+        
         output_scaler = AffineInputTransform(
             d=len(output_cols),
             coefficient=torch.tensor((output_maxs - output_mins).values, dtype=torch.float32),
@@ -1884,15 +1937,15 @@ def main():
     train_df.loc[:, input_cols] = input_scaler.transform(
         torch.tensor(train_df[input_cols].to_numpy(dtype=np.float32))
     ).numpy()
-    test_df.loc[:, input_cols] = input_scaler.transform(
-        torch.tensor(test_df[input_cols].to_numpy(dtype=np.float32))
-    ).numpy()
+    # test_df.loc[:, input_cols] = input_scaler.transform(
+        # torch.tensor(test_df[input_cols].to_numpy(dtype=np.float32))
+    # ).numpy()
     train_df.loc[:, output_cols] = output_scaler.transform(
         torch.tensor(train_df[output_cols].to_numpy(dtype=np.float32))
     ).numpy()
-    test_df.loc[:, output_cols] = output_scaler.transform(
-        torch.tensor(test_df[output_cols].to_numpy(dtype=np.float32))
-    ).numpy()
+    # test_df.loc[:, output_cols] = output_scaler.transform(
+        # torch.tensor(test_df[output_cols].to_numpy(dtype=np.float32))
+    # ).numpy()
     
     if len(val_df) > 0:
         val_df.loc[:, input_cols] = input_scaler.transform(
@@ -1902,19 +1955,10 @@ def main():
             torch.tensor(val_df[output_cols].to_numpy(dtype=np.float32))
         ).numpy()
     
-    # Validate scaled data
-    logger.info("\nValidating scaled data...")
-    train_nan_count = train_df[input_cols].isna().sum().sum()
-    train_inf_count = np.isinf(train_df[input_cols].values).sum()
-    
-    if train_nan_count > 0 or train_inf_count > 0:
-        logger.error(f"❌ Invalid values in training data after scaling!")
-        logger.error(f"   NaN: {train_nan_count}, Inf: {train_inf_count}")
-        exit(1)
-    
-    logger.info("✓ Scaled data validated")
-    logger.info(f"  Range: [{train_df[input_cols].min().min():.4f}, {train_df[input_cols].max().max():.4f}]")
-    
+    test_df = val_df
+    logger.info(f"Train samples: {len(train_df):,}")
+    logger.info(f"Test samples:  {len(test_df):,}")
+
     # ============================================================================
     # ⭐ STEP 7: Create model (use pretrained architecture if retraining)
     # ============================================================================
@@ -1927,7 +1971,7 @@ def main():
         hidden_dims = pretrained_architecture
         logger.info(f"Using pre-trained architecture: {hidden_dims}")
     else:
-        hidden_dims = [1024, 512, 256, 128, 64, 32, 16]
+        hidden_dims = [1024, 1024, 512, 256, 128, 64, 32, 16]
         logger.info(f"Fresh architecture: {hidden_dims}")
     
     model = FELNeuralNetwork(
@@ -1965,7 +2009,7 @@ def main():
         train_df, test_df, input_cols, output_cols, batch_size=args.batch_size
     )
     
-    lr = 3e-6 # default: 1e-5
+    lr = 1e-6 # default: 1e-5
     weight_decay = 1e-4
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
@@ -1984,8 +2028,14 @@ def main():
     # Load checkpoint if resuming
     start_epoch = 0
     if args.resume_from and os.path.exists(args.resume_from):
-        logger.info(f"Resuming from checkpoint: {args.resume_from}")
         start_epoch = load_checkpoint(args.resume_from, model, optimizer, scheduler, device)
+    
+        # Force CLI hyperparameters after resume
+        for pg in optimizer.param_groups:
+            pg["lr"] = args.lr
+            pg["weight_decay"] = args.weight_decay
+    
+        logger.info(f"✓ Re-applied optimizer hparams after resume: lr={args.lr}, weight_decay={args.weight_decay}")
     
     # ============================================================================
     # ⭐ STEP 9: Train
